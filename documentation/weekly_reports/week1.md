@@ -1,6 +1,6 @@
 # Report for week 1
 
-- Language: Java (11)
+- Language: Java (11) with Gradle
 - Topic: Dungeon Generator
 
 **Hours: 1** + the time used for deciding the topic.
