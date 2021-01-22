@@ -1,6 +1,6 @@
 # Ryuuri - (tiralab - Helsinki 2021)
 
-The name, Ryuuri (流離), is Japanese and it means _"to wander in a foreign country far from home"_.
+The name, Ryuuri (流離), is Japanese and means _"to wander in a foreign country far from home"_.
 
 ### Weekly reports
 
