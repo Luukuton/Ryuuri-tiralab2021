@@ -29,10 +29,7 @@ public class CelluralMapHandler {
         rand = (seed == 0) ? new Random() : new Random(seed);
 
         initializeMap();
-
-        for (int i = 0; i < steps; i++) {
-            doSimulationStep();
-        }
+        doSimulationStep(steps);
     }
 
     /** Overloading constructor without seed
@@ -61,31 +58,36 @@ public class CelluralMapHandler {
         }
     }
 
-    /** Makes one simulation step */
-    public void doSimulationStep() {
-        int[][] newMap = new int[width][height];
+    /** Makes one simulation step
+     *
+     * @param steps The amount of simulation steps to make as integer
+     */
+    public void doSimulationStep(int steps) {
+        for (int i = 0; i < steps; i++) {
+            int[][] newMap = new int[width][height];
 
-        for (int x = 0; x < map.length; x++) {
-            for (int y = 0; y < map[0].length; y++) {
-                int nbs = countAliveNeighbours(x, y);
+            for (int x = 0; x < map.length; x++) {
+                for (int y = 0; y < map[0].length; y++) {
+                    int nbs = countAliveNeighbours(x, y);
 
-                if (map[x][y] > 0) {
-                    if (nbs < deathLimit) {
-                        newMap[x][y] = 0;
+                    if (map[x][y] > 0) {
+                        if (nbs < deathLimit) {
+                            newMap[x][y] = 0;
+                        } else {
+                            newMap[x][y] = 1;
+                        }
                     } else {
-                        newMap[x][y] = 1;
-                    }
-                } else {
-                    if (nbs > birthLimit) {
-                        newMap[x][y] = 1;
-                    } else {
-                        newMap[x][y] = 0;
+                        if (nbs > birthLimit) {
+                            newMap[x][y] = 1;
+                        } else {
+                            newMap[x][y] = 0;
+                        }
                     }
                 }
             }
-        }
 
-        map = newMap.clone();
+            map = newMap.clone();
+        }
     }
 
     /**
