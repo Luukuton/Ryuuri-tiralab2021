@@ -1,5 +1,6 @@
 package ryuuri.ui;
 
+import javafx.stage.FileChooser;
 import ryuuri.dao.ImageUtil;
 import ryuuri.mapgen.CelluralMapHandler;
 
@@ -13,15 +14,17 @@ import javafx.scene.layout.*;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * A class for the application GUI.
  */
 
 public class GUI extends Application {
-    private GridPane header, content;
-    private Slider widthField, heightField, chanceField, stepsField;
-    private Button generateBtn, saveFileBtn;
-    private ImageView dungeonImage;
+    private Slider widthSlider, heightSlider, chanceSlider, stepsSlider, xScaleSlider, yScaleSlider;
+    private Button generateBtn, saveImgFile, saveDataBtn, importBtn;
+    private ImageUtil imageUtil;
 
     /**
      * The main window of the application.
@@ -34,86 +37,103 @@ public class GUI extends Application {
         System.setProperty("prism.lcdtext", "false");
 
         // Basic UI settings //
-        StackPane base = new StackPane();
-        var layout = new VBox();
-        content = new GridPane();
-        header = new GridPane();
-
-        content.setMinHeight(100);
-        content.setAlignment(Pos.TOP_CENTER);
-        content.setPadding(new Insets(10));
-        content.setVgap(5);
-        content.setHgap(5);
-
+        GridPane header = new GridPane();
+        BorderPane borderPane = new BorderPane();
         header.setAlignment(Pos.TOP_CENTER);
         header.setPadding(new Insets(10));
         header.setVgap(5);
         header.setHgap(5);
 
         // Sliders //
-        widthField = new Slider(1, 10000, 30);
-        heightField = new Slider(1, 10000, 30);
-        chanceField = new Slider(1, 100, 45);
-        stepsField = new Slider(1, 10000, 3);
+        widthSlider = new Slider(1, 10000, 30);
+        heightSlider = new Slider(1, 10000, 30);
+        chanceSlider = new Slider(1, 100, 45);
+        stepsSlider = new Slider(1, 10000, 3);
+        xScaleSlider = new Slider(1, 16, 1);
+        yScaleSlider = new Slider(1, 16, 1);
 
         HBox widthFrame = createSlider(
-                widthField,
+                widthSlider,
                 "x (px)",
                 "Width of the dungeon in pixels.",
                 30,
                 10000
         );
         HBox heightFrame = createSlider(
-                heightField,
+                heightSlider,
                 "y (px)",
                 "Height of the dungeon in pixels.",
                 30,
                 10000
         );
         HBox chanceFrame = createSlider(
-                chanceField,
+                chanceSlider,
                 "%",
                 "Chance for the cells (pixels) to die on each step.",
                 45,
                 100
         );
         HBox stepsFrame = createSlider(
-                stepsField,
+                stepsSlider,
                 "Steps",
                 "The amount of simulation steps to run.",
                 3,
                 10000
         );
+        HBox xScaleFrame = createSlider(
+                xScaleSlider,
+                "x (factor)",
+                "Times to scale the x axis of the image.",
+                1,
+                16
+        );
+        HBox yScaleFrame = createSlider(
+                yScaleSlider,
+                "y (factor)",
+                "Times to scale the y axis of the image.",
+                1,
+                16
+        );
 
         // Buttons //
         generateBtn = new Button("Generate");
-
-        // Do not focus on anything at app launch.
-        generateBtn.setFocusTraversable(false);
+        saveImgFile = new Button("Save image as");
+        saveImgFile.setDisable(true);
+        // saveDataBtn = new Button("Save raw data");
+        // importBtn = new Button("Import raw data");
 
         // Actions
+        ImageView imageView = new ImageView();
         generateBtn.setOnAction(e -> {
             generate(
-                    (int) widthField.getValue(),
-                    (int) heightField.getValue(),
-                    (int) chanceField.getValue(),
-                    (int) stepsField.getValue()
+                    (int) widthSlider.getValue(),
+                    (int) heightSlider.getValue(),
+                    (int) chanceSlider.getValue(),
+                    (int) stepsSlider.getValue(),
+                    (int) xScaleSlider.getValue(),
+                    (int) yScaleSlider.getValue()
             );
-
-            content.getChildren().removeAll();
-            content.add(dungeonImage, 0, 0);
+            imageView.setImage(imageUtil.getImage());
+            saveImgFile.setDisable(false);
         });
 
-//        //saveFileBtn.setOnAction(e -> {
-//            // Possibly TODO: Save to file
-//        //});
+        saveImgFile.setOnAction(e -> {
+            try {
+                saveToFile();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
 
         int row = 0;
-        header.add(generateBtn,         0, row);
-        header.add(widthFrame,         1, row);
-        header.add(heightFrame,         1, ++row);
-        header.add(chanceFrame,         1, ++row);
-        header.add(stepsFrame,         1, ++row);
+        header.add(generateBtn, 0, row);
+        header.add(widthFrame,  1, row);
+        header.add(heightFrame, 1, ++row);
+        header.add(saveImgFile, 0, row);
+        header.add(chanceFrame, 1, ++row);
+        header.add(stepsFrame,  1, ++row);
+        header.add(xScaleFrame, 1, ++row);
+        header.add(yScaleFrame, 1, ++row);
 
         // Close all child windows when exiting the main app
         stage.setOnCloseRequest(e -> {
@@ -121,12 +141,12 @@ public class GUI extends Application {
             System.exit(0);
         });
 
-        layout.getChildren().addAll(header, content);
-        base.getChildren().add(layout);
-        var scene = new Scene(base, 360, 360);
+        borderPane.setCenter(imageView);
+        borderPane.setLeft(header);
+        var scene = new Scene(borderPane, 854, 480);
 
-        stage.setMinHeight(360);
-        stage.setMinWidth(360);
+        stage.setMinWidth(854);
+        stage.setMinHeight(480);
         stage.setTitle("Ryuuri");
         // TODO: Add an icon
         // stage.getIcons().add(new Image(""));
@@ -140,17 +160,30 @@ public class GUI extends Application {
      * @param width Width in pixels as integer
      * @param height Height in pixels as integer
      * @param chance The chance for the cells (pixels) to die as integer
-     * @param steps How many simulation steps to do as integer
+     * @param steps Simulation steps to do as integer
+     * @param xFactor Times to scale the image in the x axis
+     * @param yFactor Times to scale the image in the y axis
      */
-    public void generate(int width, int height, int chance, int steps) {
-        CelluralMapHandler cell2 = new CelluralMapHandler(width, height, chance, steps);
+    public void generate(int width, int height, int chance, int steps, int xFactor, int yFactor) {
+        CelluralMapHandler cells = new CelluralMapHandler(width, height, chance, steps);
 
-        // String output = cell2.mapToString();
+        // String output = cells.mapToString();
 
-        ImageUtil imageUtil = new ImageUtil(cell2.map);
-        imageUtil.scaleData(1, 1);
+        imageUtil = new ImageUtil(cells.map);
+        imageUtil.scaleData(xFactor, yFactor);
 
-        dungeonImage = new ImageView(imageUtil.generateImage());
+        imageUtil.generateImage();
+    }
+
+    /**
+     * Helper method for creating the dungeon.
+     *
+     */
+    public void saveToFile() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialFileName("dungeon.png");
+        File file = fileChooser.showSaveDialog(null);
+        imageUtil.writeFile(file);
     }
 
     /**

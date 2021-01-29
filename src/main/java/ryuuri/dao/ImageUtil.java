@@ -2,6 +2,12 @@ package ryuuri.dao;
 
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.embed.swing.SwingFXUtils;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class ImageUtil {
     private int width, height;
@@ -72,10 +78,14 @@ public class ImageUtil {
 
     /**
      * Writes the image to a file
-     * TODO!
+     *
+     * @param file File to save
      */
-    public void writeFile() {
-//        File output = new File("dungeon.png");
-//        ImageIO.write(image, "png", output);
+    public void writeFile(File file) {
+        try {
+            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+            ImageIO.write(bufferedImage, "png", file);
+        } catch (IOException ignored) {
+        }
     }
 }
