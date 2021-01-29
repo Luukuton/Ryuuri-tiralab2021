@@ -1,5 +1,7 @@
 # Ryuuri (tiralab - Helsinki 2021)
 
+![Github Actions](https://github.com/Luukuton/Ryuuri-tiralab2021/workflows/Java%20CI%20with%20Gradle/badge.svg)
+
 The name, Ryuuri (流離), is Japanese and means _"to wander in a foreign country far from home"_.
 
 ## Weekly reports
