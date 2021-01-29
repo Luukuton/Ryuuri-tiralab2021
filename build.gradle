@@ -41,7 +41,10 @@ jar {
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        includeTags 'UnitTest'
+        excludeTags 'Benchmark'
+    }
 }
 
 jacocoTestReport {
@@ -51,7 +54,7 @@ jacocoTestReport {
     }
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it)
+            fileTree(dir: it, exclude: ['ryuuri/Main*', 'ryuuri/ui/*'])
         }))
     }
 }

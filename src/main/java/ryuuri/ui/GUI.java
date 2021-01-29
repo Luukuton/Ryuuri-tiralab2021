@@ -25,6 +25,7 @@ public class GUI extends Application {
     private Slider widthSlider, heightSlider, chanceSlider, stepsSlider, xScaleSlider, yScaleSlider;
     private Button generateBtn, saveImgFile, saveDataBtn, importBtn;
     private ImageUtil imageUtil;
+    private long currentSeed;
 
     /**
      * The main window of the application.
@@ -37,20 +38,22 @@ public class GUI extends Application {
         System.setProperty("prism.lcdtext", "false");
 
         // Basic UI settings //
-        GridPane header = new GridPane();
+        GridPane controls = new GridPane();
         BorderPane borderPane = new BorderPane();
-        header.setAlignment(Pos.TOP_CENTER);
-        header.setPadding(new Insets(10));
-        header.setVgap(5);
-        header.setHgap(5);
+        controls.setAlignment(Pos.TOP_CENTER);
+        controls.setPadding(new Insets(10));
+        controls.setVgap(5);
+        controls.setHgap(5);
 
-        // Sliders //
+        // Input //
         widthSlider = new Slider(1, 10000, 30);
         heightSlider = new Slider(1, 10000, 30);
         chanceSlider = new Slider(1, 100, 45);
         stepsSlider = new Slider(1, 10000, 3);
         xScaleSlider = new Slider(1, 16, 1);
         yScaleSlider = new Slider(1, 16, 1);
+        LongField seedField = new LongField(Long.MIN_VALUE, Long.MAX_VALUE, 0);
+        seedField.setPromptText("Seed");
 
         HBox widthFrame = createSlider(
                 widthSlider,
@@ -95,6 +98,13 @@ public class GUI extends Application {
                 16
         );
 
+        Label seedLabel = new Label("Seed");
+        seedLabel.setTooltip(new Tooltip("The seed for the dungeon. Inputting 0 or nothing means no seed. 99999999 is the maximum."));
+        seedLabel.setPrefWidth(60);
+
+        HBox seedFrame = new HBox(seedLabel, seedField);
+        seedFrame.setStyle("-fx-background-color: white; -fx-padding:10; -fx-font-size: 12; -fx-alignment: baseline-left;");
+
         // Buttons //
         generateBtn = new Button("Generate");
         saveImgFile = new Button("Save image as");
@@ -111,8 +121,10 @@ public class GUI extends Application {
                     (int) chanceSlider.getValue(),
                     (int) stepsSlider.getValue(),
                     (int) xScaleSlider.getValue(),
-                    (int) yScaleSlider.getValue()
+                    (int) yScaleSlider.getValue(),
+                    seedField.getValue()
             );
+            seedField.setValue(currentSeed);
             imageView.setImage(imageUtil.getImage());
             saveImgFile.setDisable(false);
         });
@@ -126,14 +138,15 @@ public class GUI extends Application {
         });
 
         int row = 0;
-        header.add(generateBtn, 0, row);
-        header.add(widthFrame,  1, row);
-        header.add(heightFrame, 1, ++row);
-        header.add(saveImgFile, 0, row);
-        header.add(chanceFrame, 1, ++row);
-        header.add(stepsFrame,  1, ++row);
-        header.add(xScaleFrame, 1, ++row);
-        header.add(yScaleFrame, 1, ++row);
+        controls.add(generateBtn, 0, row);
+        controls.add(widthFrame,  1, row);
+        controls.add(heightFrame, 1, ++row);
+        controls.add(saveImgFile, 0, row);
+        controls.add(chanceFrame, 1, ++row);
+        controls.add(stepsFrame,  1, ++row);
+        controls.add(xScaleFrame, 1, ++row);
+        controls.add(yScaleFrame, 1, ++row);
+        controls.add(seedFrame,   1, ++row);
 
         // Close all child windows when exiting the main app
         stage.setOnCloseRequest(e -> {
@@ -142,7 +155,7 @@ public class GUI extends Application {
         });
 
         borderPane.setCenter(imageView);
-        borderPane.setLeft(header);
+        borderPane.setLeft(controls);
         var scene = new Scene(borderPane, 854, 480);
 
         stage.setMinWidth(854);
@@ -164,8 +177,14 @@ public class GUI extends Application {
      * @param xFactor Times to scale the image in the x axis
      * @param yFactor Times to scale the image in the y axis
      */
-    public void generate(int width, int height, int chance, int steps, int xFactor, int yFactor) {
-        CelluralMapHandler cells = new CelluralMapHandler(width, height, chance, steps);
+    public void generate(int width, int height, int chance, int steps, int xFactor, int yFactor, long seed) {
+        CelluralMapHandler cells = new CelluralMapHandler(width, height, chance, steps, seed);
+
+        if (seed == 0) {
+            currentSeed = cells.getSeed();
+        } else {
+            currentSeed = seed;
+        }
 
         // String output = cells.mapToString();
 
@@ -201,13 +220,13 @@ public class GUI extends Application {
         label.setTooltip(new Tooltip(tooltip));
         label.setPrefWidth(50);
 
-        final IntField intField = new IntField(0, max, initial);
-        intField.setTooltip(new Tooltip("Click on me to edit the slider's value!"));
-        intField.valueProperty().bindBidirectional(slider.valueProperty());
-        intField.setPrefWidth(50);
+        final LongField longField = new LongField(0, max, initial);
+        longField.setTooltip(new Tooltip("Click on me to edit the slider's value!"));
+        longField.valueProperty().bindBidirectional(slider.valueProperty());
+        longField.setPrefWidth(50);
 
         HBox sliderFrame = new HBox(10);
-        sliderFrame.getChildren().addAll(label, intField, slider);
+        sliderFrame.getChildren().addAll(label, longField, slider);
         sliderFrame.setStyle("-fx-background-color: white; -fx-padding:10; -fx-font-size: 12; -fx-alignment: baseline-left;");
 
         return sliderFrame;

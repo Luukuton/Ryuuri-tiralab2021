@@ -7,6 +7,7 @@ public class CelluralMapHandler {
     public int[][] map;
     private final int width, height, aliveChance, deathLimit, birthLimit;
     private final Random rand;
+    private final long seed;
 
     /**
      * Constructor
@@ -24,15 +25,16 @@ public class CelluralMapHandler {
         this.birthLimit = 4;
         this.deathLimit = 3;
 
+        this.seed = (seed == 0) ? new Random().nextLong() : seed;
+        rand = new Random(seed);
+
         map = new int[width][height];
-
-        rand = (seed == 0) ? new Random() : new Random(seed);
-
         initializeMap();
         doSimulationStep(steps);
     }
 
-    /** Overloading constructor without seed
+    /**
+     * Overloading constructor without seed
      *
      * @param width Width in pixels as integer
      * @param height Height in pixels as integer
@@ -58,7 +60,8 @@ public class CelluralMapHandler {
         }
     }
 
-    /** Makes one simulation step
+    /**
+     * Makes one simulation step
      *
      * @param steps The amount of simulation steps to make as integer
      */
@@ -112,6 +115,15 @@ public class CelluralMapHandler {
             }
         }
         return count;
+    }
+
+    /**
+     * Returns the seed.
+     *
+     * @return The seed as long
+     */
+    public long getSeed() {
+        return seed;
     }
 
     /**
