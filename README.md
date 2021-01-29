@@ -4,7 +4,7 @@
 
 The name, Ryuuri (流離), is Japanese and means _"to wander in a foreign country far from home"_.
 
-<TODO: Preview images here!>
+![preview of the application](documentation/images/preview.gif)
 
 ## Weekly reports
 
@@ -70,3 +70,12 @@ Results can be viewed by opening _target/site/checkstyle.html_ in a browser.
 ## Dependencies
 * Java 11+
 * Gradle 6.8.1+
+
+
+### Examples of some dungeons
+
+1. 200x200 px, 40 %, 2 steps, x & y scaled by 2, seed: 7482077468331371336
+2. 200x200 px, 47 %, 5 steps, x & y scaled by 2, seed: 8684197241994208105
+
+![preview of the application](documentation/images/200x200_47%25_2steps_2x2scale_7482077468331371336.png)
+![preview of the application](documentation/images/200x200_40%25_5steps_2x2scale_8684197241994208105.png)
