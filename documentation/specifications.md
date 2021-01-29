@@ -18,8 +18,18 @@ The algorithm Ryuuri uses is based on [Conway's Game of Life](https://en.wikiped
 
 [Source](http://roguebasin.roguelikedevelopment.org/index.php?title=Cellular_Automata_Method_for_Generating_Random_Cave-Like_Levels) for inspiration.
 
+### Inputs:
+- **Width** in pixels (integer, >= 1)
+- **Height** in pixels (integer, >= 1)
+- **Probability** for the cell (pixel) to live a cycle (integer, 0 - 100)
+- **Simulation steps** or **cycles** (integer, >= 0)
+- **Seed** for the Random Number Generator (integer)
+  - Currently using Java's implementation of Random
+- **Birth** and **Death limits** for cells (pixels) if found necessary
+  - Currently hard coded as 4 and 3
+
 ### Execution time target
-- **Aiming for O(n^2) because of 2D matrices. Possibily faster!**
+- **Aiming for O(n^2) because of 2D matrices. Possibly faster!**
 - Less than 1 s for small-sized data sets (parameters in hundreds)
 - Less than 10 s for medium-sized data sets (parameters in thousands)
 - Currently, no specific target for large-sized data sets, but possibly less than 10 minutes (parameters in tens of thousands)
@@ -28,19 +38,6 @@ The algorithm Ryuuri uses is based on [Conway's Game of Life](https://en.wikiped
 - Less than 10 MiB for small-sized data sets (parameters in hundreds)
 - Less than 100 MiB for medium-sized data sets (parameters in thousands)
 - Currently, no specific target for large-sized data sets, but possibly less than 1 GiB (parameters in tens of thousands)
-
-
-
-### Inputs:
-- **Width** in pixels (integer, >= 1)
-- **Height** in pixels (integer, >= 1)
-- **Probability** for the cell (pixel) to live a cycle (integer, 0 - 100)
-- **Simulation steps** or **cycles** (integer, >= 0)
-- **Seed** for the Random Number Generator (integer)
-  - Currently using Java's implementation of Random
-- **Birth** and **Death limits** for cells (pixels) if found necessary 
-   - Currently hard coded as 4 and 3
-
 
 ## Image
 

@@ -1,4 +1,5 @@
 # This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
 name: Java CI with Gradle
 
@@ -10,9 +11,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -23,9 +22,9 @@ jobs:
         run: chmod +x gradlew
       - name: Test with Gradle
         run: ./gradlew test
-      - name: Code coverage report
-        run: ./gradlew jacocoTestReport
-      - name: Data to codecov
-        run: bash <(curl -s https://codecov.io/bash)
+#      - name: Code coverage report
+#        run: ./gradlew jacocoTestReport
+#      - name: Data to codecov
+#        run: bash <(curl -s https://codecov.io/bash)
       - name: Checkstyle
         run: ./gradlew checkstyleMain
