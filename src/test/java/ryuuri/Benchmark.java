@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class Benchmark {
 
     @Test
-    @Tag("UnitTest")
+    @Tag("Benchmark")
     void mediumSized() throws IOException {
         long startTime = System.currentTimeMillis();
         CelluralMapHandler cell = new CelluralMapHandler(1000, 1000, 40, 1000, 555);

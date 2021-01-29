@@ -26,7 +26,7 @@ public class CelluralMapHandler {
         this.deathLimit = 3;
 
         this.seed = (seed == 0) ? new Random().nextLong() : seed;
-        rand = new Random(seed);
+        rand = new Random(this.seed);
 
         map = new int[width][height];
         initializeMap();

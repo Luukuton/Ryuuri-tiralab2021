@@ -1,5 +1,7 @@
 package ryuuri.ui;
 
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.stage.FileChooser;
 import ryuuri.dao.ImageUtil;
 import ryuuri.mapgen.CelluralMapHandler;
@@ -24,7 +26,10 @@ import java.io.IOException;
 public class GUI extends Application {
     private Slider widthSlider, heightSlider, chanceSlider, stepsSlider, xScaleSlider, yScaleSlider;
     private Button generateBtn, saveImgFile, saveDataBtn, importBtn;
+    private CheckBox seedLocked;
     private ImageUtil imageUtil;
+
+    private String rawData;
     private long currentSeed;
 
     /**
@@ -102,15 +107,21 @@ public class GUI extends Application {
         seedLabel.setTooltip(new Tooltip("The seed for the dungeon. Inputting 0 or nothing means no seed. 99999999 is the maximum."));
         seedLabel.setPrefWidth(60);
 
-        HBox seedFrame = new HBox(seedLabel, seedField);
+        // If not checked, the seed will change on clicking Generate.
+        seedLocked = new CheckBox("Lock");
+
+        HBox seedFrame = new HBox(seedLabel, seedField, seedLocked);
         seedFrame.setStyle("-fx-background-color: white; -fx-padding:10; -fx-font-size: 12; -fx-alignment: baseline-left;");
+
 
         // Buttons //
         generateBtn = new Button("Generate");
         saveImgFile = new Button("Save image as");
-        saveImgFile.setDisable(true);
-        // saveDataBtn = new Button("Save raw data");
+        saveDataBtn = new Button("Copy data to clipboard");
         // importBtn = new Button("Import raw data");
+
+        saveImgFile.setDisable(true);
+        saveDataBtn.setDisable(true);
 
         // Actions
         ImageView imageView = new ImageView();
@@ -127,6 +138,7 @@ public class GUI extends Application {
             seedField.setValue(currentSeed);
             imageView.setImage(imageUtil.getImage());
             saveImgFile.setDisable(false);
+            saveDataBtn.setDisable(false);
         });
 
         saveImgFile.setOnAction(e -> {
@@ -137,16 +149,19 @@ public class GUI extends Application {
             }
         });
 
+        saveDataBtn.setOnAction(e -> copyRawData());
+
         int row = 0;
-        controls.add(generateBtn, 0, row);
         controls.add(widthFrame,  1, row);
         controls.add(heightFrame, 1, ++row);
-        controls.add(saveImgFile, 0, row);
         controls.add(chanceFrame, 1, ++row);
         controls.add(stepsFrame,  1, ++row);
         controls.add(xScaleFrame, 1, ++row);
         controls.add(yScaleFrame, 1, ++row);
         controls.add(seedFrame,   1, ++row);
+        controls.add(generateBtn, 1, ++row);
+        controls.add(saveImgFile, 1, ++row);
+        controls.add(saveDataBtn, 1, ++row);
 
         // Close all child windows when exiting the main app
         stage.setOnCloseRequest(e -> {
@@ -176,8 +191,13 @@ public class GUI extends Application {
      * @param steps Simulation steps to do as integer
      * @param xFactor Times to scale the image in the x axis
      * @param yFactor Times to scale the image in the y axis
+     * @param seed The seed for Random class
      */
     public void generate(int width, int height, int chance, int steps, int xFactor, int yFactor, long seed) {
+        if (!seedLocked.isSelected()) {
+            seed = 0;
+        }
+
         CelluralMapHandler cells = new CelluralMapHandler(width, height, chance, steps, seed);
 
         if (seed == 0) {
@@ -186,7 +206,7 @@ public class GUI extends Application {
             currentSeed = seed;
         }
 
-        // String output = cells.mapToString();
+        rawData = cells.mapToString();
 
         imageUtil = new ImageUtil(cells.map);
         imageUtil.scaleData(xFactor, yFactor);
@@ -197,12 +217,21 @@ public class GUI extends Application {
     /**
      * Helper method for creating the dungeon.
      *
+     * @throws IOException on IO error
      */
     public void saveToFile() throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialFileName("dungeon.png");
         File file = fileChooser.showSaveDialog(null);
         imageUtil.writeFile(file);
+    }
+
+    /** Copies the raw data to clipboard */
+    public void copyRawData() {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(rawData);
+        clipboard.setContent(content);
     }
 
     /**
