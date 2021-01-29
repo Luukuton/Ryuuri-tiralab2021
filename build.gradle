@@ -1,19 +1,55 @@
 plugins {
     id 'java'
+    id 'jacoco'
+    id 'checkstyle'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'org.beryx.jlink' version '2.23.2'
+    id "com.github.johnrengelman.shadow" version "6.1.0"
 }
 
+sourceCompatibility = 11
+targetCompatibility = 11
+
+mainClassName = "ryuuri.Main"
+
 group 'org.example'
-version '1.0-SNAPSHOT'
+version '0.1-SNAPSHOT'
 
 repositories {
+    jcenter()
     mavenCentral()
 }
 
+javafx {
+    version = "15.0.1"
+    modules = [ 'javafx.controls' ]
+}
+
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    implementation 'org.openjfx:javafx-graphics:15.0.1:win'
+    implementation 'org.openjfx:javafx-graphics:15.0.1:linux'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class':'ryuuri.Main'
+    }
 }
 
 test {
     useJUnitPlatform()
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it)
+        }))
+    }
 }
