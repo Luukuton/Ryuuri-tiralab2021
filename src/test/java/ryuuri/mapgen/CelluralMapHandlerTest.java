@@ -46,6 +46,37 @@ class CelluralMapHandlerTest {
 
     @Test
     @Tag("UnitTest")
+    void correctStringOutputOnThreeSimulationStepsForLogicV2() {
+        cell.setLogicVersion(2);
+        cell.doSimulationStep(3);
+        String output = cell.mapToString();
+        String expected =
+                "######..#########..#\n" +
+                "#........##.........\n" +
+                "#...................\n" +
+                "##..................\n" +
+                "####....###.........\n" +
+                "#####..####........#\n" +
+                "###########........#\n" +
+                "#..########.......##\n" +
+                "#..###...##......###\n" +
+                "###.......##.....###\n" +
+                "###......####....###\n" +
+                "###.....######...###\n" +
+                "####....######...###\n" +
+                "####.....####.....##\n" +
+                "#####.....##.......#\n" +
+                "######............##\n" +
+                "##..###...........##\n" +
+                "##...##...........##\n" +
+                "##..####......######\n" +
+                "####################\n";
+
+        assertEquals(output, expected);
+    }
+
+    @Test
+    @Tag("UnitTest")
     public void correctAmountOfAliveNeighbours() {
         assertEquals(cell.countAliveNeighbours(0,0), 6);
         assertEquals(cell.countAliveNeighbours(10,10), 5);
@@ -109,5 +140,19 @@ class CelluralMapHandlerTest {
                 "####################\n";
 
         assertEquals(output, expected);
+    }
+
+    @Test
+    @Tag("UnitTest")
+    public void dungeonIsConnected() {
+        cell = new CelluralMapHandler(20, 20, 35, 3, -6701776563025189454L);
+        assertTrue(cell.isDungeonConnected());
+    }
+
+    @Test
+    @Tag("UnitTest")
+    public void dungeonIsNotConnected() {
+        cell = new CelluralMapHandler(200, 200, 40, 3, 8888);
+        assertFalse(cell.isDungeonConnected());
     }
 }

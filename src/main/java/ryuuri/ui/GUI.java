@@ -171,10 +171,10 @@ public class GUI extends Application {
 
         borderPane.setCenter(imageView);
         borderPane.setLeft(controls);
-        var scene = new Scene(borderPane, 854, 480);
+        var scene = new Scene(borderPane, 960, 540);
 
-        stage.setMinWidth(854);
-        stage.setMinHeight(480);
+        stage.setMinWidth(960);
+        stage.setMinHeight(540);
         stage.setTitle("Ryuuri");
         // TODO: Add an icon
         // stage.getIcons().add(new Image(""));

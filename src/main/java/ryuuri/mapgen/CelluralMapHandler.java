@@ -6,8 +6,11 @@ import java.util.Random;
 public class CelluralMapHandler {
     public int[][] map;
     private final int width, height, aliveChance, deathLimit, birthLimit;
+
     private final Random rand;
     private final long seed;
+
+    private int logicVersion;
 
     /**
      * Constructor
@@ -25,8 +28,12 @@ public class CelluralMapHandler {
         this.birthLimit = 4;
         this.deathLimit = 3;
 
+        logicVersion = 1;
+
         this.seed = (seed == 0) ? new Random().nextLong() : seed;
         rand = new Random(this.seed);
+
+        System.out.println("Seed: " + this.seed);
 
         map = new int[width][height];
         initializeMap();
@@ -69,27 +76,17 @@ public class CelluralMapHandler {
         for (int i = 0; i < steps; i++) {
             int[][] newMap = new int[width][height];
 
-            for (int x = 0; x < map.length; x++) {
-                for (int y = 0; y < map[0].length; y++) {
-                    int nbs = countAliveNeighbours(x, y);
-
-                    if (map[x][y] > 0) {
-                        if (nbs < deathLimit) {
-                            newMap[x][y] = 0;
-                        } else {
-                            newMap[x][y] = 1;
-                        }
-                    } else {
-                        if (nbs > birthLimit) {
-                            newMap[x][y] = 1;
-                        } else {
-                            newMap[x][y] = 0;
-                        }
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    if (logicVersion == 1) {
+                        newMap[x][y] = dungeonLogic(x, y);
+                    } else if (logicVersion == 2) {
+                        newMap[x][y] = dungeonLogicV2(x, y);
                     }
                 }
             }
 
-            map = newMap.clone();
+            map = Arrays.stream(newMap).map(int[]::clone).toArray(int[][]::new);
         }
     }
 
@@ -107,7 +104,7 @@ public class CelluralMapHandler {
                 int neighbourX = x + i;
                 int neighbourY = y + j;
 
-                if (neighbourX < 0 || neighbourY < 0 || neighbourX >= map.length || neighbourY >= map[0].length) {
+                if (neighbourX < 0 || neighbourY < 0 || neighbourX >= width || neighbourY >= height) {
                     count = count + 1;
                 } else if (map[neighbourX][neighbourY] == 1) {
                     count = count + 1;
@@ -118,12 +115,140 @@ public class CelluralMapHandler {
     }
 
     /**
-     * Returns the seed.
+     * Determines if the cell will be a wall
+     *
+     * @param x X coordinate as integer
+     * @param y Y coordinate as integer
+     * @return 1 (wall) or 0 (open path)
+     */
+    private int dungeonLogic(int x, int y) {
+        int alive = countAliveNeighbours(x, y);
+
+        if (map[x][y] > 0) {
+            if (alive < deathLimit) {
+                return 0;
+            } else {
+                return 1;
+            }
+        } else {
+            if (alive > birthLimit) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    /**
+     * Possibly a better version of the function 'dungeonLogic' when it comes to the connectivity of the dungeon.
+     *
+     * @param x X coordinate as integer
+     * @param y Y coordinate as integer
+     * @return 1 (wall) or 0 (open path)
+     */
+    private int dungeonLogicV2(int x, int y) {
+        int alive = countAliveNeighbours(x, y);
+
+        if (map[x][y] == 1) {
+            if (alive >= 4) {
+                return 1;
+            }
+
+            if (alive < 2) {
+                return 0;
+            }
+
+        } else {
+            if (alive >= 5) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Recursive function that returns the amount of connected cells at starting point x,y in a map
+     *
+     * @param x X coordinate as integer
+     * @param y Y coordinate as integer
+     * @param map integer 2D matrix to search
+     * @return the amount of connected cells as integer
+     */
+    private int connectedCells(int x, int y, int[][] map) {
+        int above = 0;
+        int below = 0;
+        int right = 0;
+        int left = 0;
+        map[x][y] = 2;
+
+        if ((x - 1 >= 0) && map[x - 1][y] == 0) {
+            above = connectedCells(x - 1, y, map);
+        }
+        if ((x + 1 < width) && map[x + 1][y] == 0) {
+            below = connectedCells(x + 1, y, map);
+        }
+        if ((y + 1 < height) && map[x][y + 1] == 0) {
+            right = connectedCells(x, y + 1, map);
+        }
+        if ((y - 1 >= 0) && map[x][y - 1] == 0) {
+            left = connectedCells(x, y - 1, map);
+        }
+
+        return above + below + right + left + 1;
+    }
+
+    /**
+     * Returns true if the dungeon is connected and false if not.
+     *
+     * @return true if connected
+     */
+    public boolean isDungeonConnected() {
+        // All cells
+        int openTileCount = 0;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (map[x][y] == 0) {
+                    ++openTileCount;
+                }
+            }
+        }
+
+        // Connected cells
+        int[][] map = Arrays.stream(this.map).map(int[]::clone).toArray(int[][]::new);
+        int startX = 0;
+        int startY = 0;
+
+        loop:
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (map[x][y] == 0) {
+                    startX = x;
+                    startY = y;
+                    break loop;
+                }
+            }
+        }
+        int connectedCells = connectedCells(startX, startY, map);
+
+        return connectedCells - openTileCount == 0;
+    }
+
+    /**
+     * Returns the seed
      *
      * @return The seed as long
      */
     public long getSeed() {
         return seed;
+    }
+
+    /**
+     * Sets the version of the algorithm logic
+     *
+     * @param version Version in int (1 or 2)
+     */
+    public void setLogicVersion(int version) {
+        logicVersion = version;
     }
 
     /**
@@ -134,11 +259,11 @@ public class CelluralMapHandler {
     public String mapToString() {
         StringBuilder returnString = new StringBuilder();
 
-        String[] mapSymbols = {".", "#", "+"};
+        String[] mapSymbols = {".", "#"};
 
-        for (int row = 0; row < height; row++) {
-            for (int column = 0; column < width; column++) {
-                returnString.append(mapSymbols[(map[column][row])]);
+        for (int x = 0; x < height; x++) {
+            for (int y = 0; y < width; y++) {
+                returnString.append(mapSymbols[(map[y][x])]);
             }
             returnString.append("\n");
         }
