@@ -12,7 +12,7 @@ class CelluralMapHandlerTest {
     @BeforeEach
     @Tag("UnitTest")
     public void setUp() {
-        cell = new CelluralMapHandler(20, 20, 40, 0, 555);
+        cell = new CelluralMapHandler(20, 20, 40, 0, 555, 1);
     }
 
     @Test
@@ -145,14 +145,14 @@ class CelluralMapHandlerTest {
     @Test
     @Tag("UnitTest")
     public void dungeonIsConnected() {
-        cell = new CelluralMapHandler(20, 20, 35, 3, -6701776563025189454L);
+        cell = new CelluralMapHandler(20, 20, 35, 3, -6701776563025189454L, 1);
         assertTrue(cell.isDungeonConnected());
     }
 
     @Test
     @Tag("UnitTest")
     public void dungeonIsNotConnected() {
-        cell = new CelluralMapHandler(200, 200, 40, 3, 8888);
+        cell = new CelluralMapHandler(200, 200, 40, 3, 8888, 1);
         assertFalse(cell.isDungeonConnected());
     }
 }

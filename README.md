@@ -37,14 +37,14 @@ gradlew shadowJar -Dplatform=linux.x86_64
 
 ## Testing
 
-Tests can be performed with:
+Tests can be performed with: 
 ```
 gradlew test
 ```
 
-and benchmarks with
+and benchmarks with: 
 ```
-gradlew benchmark
+gradlew clean benchmark
 ```
 
 Code coverage can be created with:

@@ -1,5 +1,7 @@
 package ryuuri.ui;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.stage.FileChooser;
@@ -29,6 +31,7 @@ public class GUI extends Application {
     private Slider widthSlider, heightSlider, chanceSlider, stepsSlider, xScaleSlider, yScaleSlider;
     private Button generateBtn, saveImgFile, saveDataBtn;
     private CheckBox seedLocked;
+    private ChoiceBox<String> algorithmVersion;
     private ImageView imageView;
     private ImageUtil imageUtil;
     private LongField seedField;
@@ -116,10 +119,18 @@ public class GUI extends Application {
         HBox seedFrame = new HBox(seedLabel, seedField, seedLocked);
         seedFrame.setStyle("-fx-background-color: white; -fx-padding:10; -fx-font-size: 12; -fx-alignment: baseline-left;");
 
+        algorithmVersion = new ChoiceBox<>();
+        ObservableList<String> items = FXCollections.observableArrayList("Ver. 1", "Ver. 2");
+        algorithmVersion.setItems(items);
+        algorithmVersion.getSelectionModel().select(0);
+
+        algorithmVersion.setPrefWidth(100);
+        algorithmVersion.setPrefHeight(25);
 
         // Buttons //
         generateBtn = new Button("Generate");
         saveImgFile = new Button("Save image as");
+        saveDataBtn = new Button("Copy data to clipboard");
         saveDataBtn = new Button("Copy data to clipboard");
         // importBtn = new Button("Import raw data");
 
@@ -159,6 +170,7 @@ public class GUI extends Application {
         controls.add(generateBtn, 1, ++row);
         controls.add(saveImgFile, 1, ++row);
         controls.add(saveDataBtn, 1, ++row);
+        controls.add(algorithmVersion, 1, ++row);
 
         // Close all child windows when exiting the main app
         stage.setOnCloseRequest(e -> {
@@ -206,7 +218,8 @@ public class GUI extends Application {
 
         long finalSeed = seed; // Variable used in lambda expression should be final or effectively final
         new Thread(() -> {
-            CelluralMapHandler cells = new CelluralMapHandler(width, height, chance, steps, finalSeed);
+            int version = algorithmVersion.getSelectionModel().getSelectedItem().equals("Ver. 2") ? 2 : 1;
+            CelluralMapHandler cells = new CelluralMapHandler(width, height, chance, steps, finalSeed, version);
 
             if (finalSeed == 0) {
                 currentSeed = cells.getSeed();

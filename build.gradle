@@ -9,8 +9,8 @@ plugins {
 
 mainClassName = "ryuuri.Main"
 
-group 'org.example'
-version '0.1-SNAPSHOT'
+group 'fi.luukuton'
+version '0.2-SNAPSHOT'
 
 repositories {
     jcenter()
@@ -48,6 +48,9 @@ task benchmark(type: Test) {
     useJUnitPlatform {
         includeTags 'Benchmark'
         excludeTags 'UnitTest'
+    }
+    testLogging {
+        showStandardStreams = true
     }
 }
 

@@ -21,14 +21,13 @@ public class CelluralMapHandler {
      * @param steps How many simulation steps to do as integer
      * @param seed Seed for the random number generator as integer
      */
-    public CelluralMapHandler(int width, int height, int aliveChance, int steps, long seed) {
+    public CelluralMapHandler(int width, int height, int aliveChance, int steps, long seed, int logicVersion) {
         this.width = width;
         this.height = height;
         this.aliveChance = aliveChance;
         this.birthLimit = 4;
         this.deathLimit = 3;
-
-        logicVersion = 1;
+        this.logicVersion = logicVersion;
 
         this.seed = (seed == 0) ? new Random().nextLong() : seed;
         rand = new Random(this.seed);
@@ -49,7 +48,7 @@ public class CelluralMapHandler {
      * @param steps How many simulation steps to do as integer
      */
     public CelluralMapHandler(int width, int height, int aliveChance, int steps) {
-        this(width, height, aliveChance, steps, 0);
+        this(width, height, aliveChance, steps, 0, 1);
     }
 
     /** Initializes the dungeon matrix **/
@@ -263,7 +262,7 @@ public class CelluralMapHandler {
 
         for (int x = 0; x < height; x++) {
             for (int y = 0; y < width; y++) {
-                returnString.append(mapSymbols[(map[y][x])]);
+                returnString.append(mapSymbols[map[y][x]]);
             }
             returnString.append("\n");
         }
