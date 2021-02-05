@@ -23,7 +23,7 @@ class Benchmark {
 
         String expected = new String(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("1000xy_1000step_40chance_555seed_dungeon.txt")).readAllBytes());
 
-        System.out.println("Total execution time: " + (endTime-startTime) + "ms");
+        System.out.println("Total execution time: " + (endTime - startTime) + "ms");
         assertEquals(output, expected);
     }
 }

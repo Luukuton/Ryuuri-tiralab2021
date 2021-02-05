@@ -88,4 +88,22 @@ public class ImageUtil {
         } catch (IOException ignored) {
         }
     }
+
+    /**
+     * Gets the width in pixels
+     *
+     * @return width in pixels as integer
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Gets the height in pixels
+     *
+     * @return height in pixels as integer
+     */
+    public int getHeight() {
+        return height;
+    }
 }

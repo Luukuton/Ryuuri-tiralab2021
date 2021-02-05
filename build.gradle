@@ -7,9 +7,6 @@ plugins {
     id "com.github.johnrengelman.shadow" version "6.1.0"
 }
 
-sourceCompatibility = 11
-targetCompatibility = 11
-
 mainClassName = "ryuuri.Main"
 
 group 'org.example'
@@ -44,6 +41,13 @@ test {
     useJUnitPlatform {
         includeTags 'UnitTest'
         excludeTags 'Benchmark'
+    }
+}
+
+task benchmark(type: Test) {
+    useJUnitPlatform {
+        includeTags 'Benchmark'
+        excludeTags 'UnitTest'
     }
 }
 

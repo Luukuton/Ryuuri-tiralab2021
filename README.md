@@ -42,6 +42,11 @@ Tests can be performed with:
 gradlew test
 ```
 
+and benchmarks with
+```
+gradlew benchmark
+```
+
 Code coverage can be created with:
 ```
 gradlew test jacocoTestReport

@@ -21,28 +21,36 @@ class ImageUtilTest {
     @BeforeEach
     void setUp() {
         // 3x3, 25%, 0 steps, seed: -8653063932943180940
-        data = new int[][] {{1, 1, 1}, {0, 0, 0}, {1, 0, 1}};
-        imageUtil = new ImageUtil(data);
+        imageUtil = new ImageUtil(new int[][] {{1, 1, 1}, {0, 0, 0}, {1, 0, 1}});
     }
 
     @Test
     @Tag("UnitTest")
-    void generateImage() throws IOException {
+    void imageGeneratedCorrectly() throws IOException {
         WritableImage output = imageUtil.generateImage();
-        InputStream resourceBuff= Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("dungeon@1.png"));
+
+        InputStream resourceBuff = Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("dungeon@1.png"));
         Image image = SwingFXUtils.toFXImage(ImageIO.read(resourceBuff), null);
-        for (int x = 0; x < data.length; x++) {
-            for (int y = 0; y < data[x].length; y++) {
+        for (int x = 0; x < imageUtil.getWidth(); x++) {
+            for (int y = 0; y < imageUtil.getHeight(); y++) {
                 assertTrue((image.getPixelReader().getArgb(x, y) == output.getPixelReader().getArgb(x, y)));
             }
         }
     }
 
     @Test
-    void scaleData() {
+    @Tag("UnitTest")
+    void imageScaledCorrectly() throws IOException {
+        imageUtil.scaleData(16, 16);
         WritableImage output = imageUtil.generateImage();
-        imageUtil.scaleData(8, 8);
-        // TODO: expected from file
+
+        InputStream resourceBuff = Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("dungeon@16.png"));
+        Image image = SwingFXUtils.toFXImage(ImageIO.read(resourceBuff), null);
+        for (int x = 0; x < imageUtil.getWidth(); x++) {
+            for (int y = 0; y < imageUtil.getHeight(); y++) {
+                assertTrue((image.getPixelReader().getArgb(x, y) == output.getPixelReader().getArgb(x, y)));
+            }
+        }
     }
 
     @Test
@@ -51,9 +59,5 @@ class ImageUtilTest {
         imageUtil.generateImage();
         WritableImage output = imageUtil.getImage();
         assertEquals(output, imageUtil.getImage());
-    }
-
-    @Test
-    void writeFile() {
     }
 }

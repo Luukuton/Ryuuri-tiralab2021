@@ -78,8 +78,8 @@ class CelluralMapHandlerTest {
     @Test
     @Tag("UnitTest")
     public void correctAmountOfAliveNeighbours() {
-        assertEquals(cell.countAliveNeighbours(0,0), 6);
-        assertEquals(cell.countAliveNeighbours(10,10), 5);
+        assertEquals(cell.countAliveNeighbours(0, 0), 6);
+        assertEquals(cell.countAliveNeighbours(10, 10), 5);
     }
 
     @Test
