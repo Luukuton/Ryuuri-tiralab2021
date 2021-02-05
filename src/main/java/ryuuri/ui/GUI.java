@@ -24,11 +24,14 @@ import java.io.IOException;
  */
 
 public class GUI extends Application {
+    private BorderPane mainView;
+    private GridPane controls;
     private Slider widthSlider, heightSlider, chanceSlider, stepsSlider, xScaleSlider, yScaleSlider;
-    private Button generateBtn, saveImgFile, saveDataBtn, importBtn;
+    private Button generateBtn, saveImgFile, saveDataBtn;
     private CheckBox seedLocked;
+    private ImageView imageView;
     private ImageUtil imageUtil;
-
+    private LongField seedField;
     private String rawData;
     private long currentSeed;
 
@@ -43,8 +46,8 @@ public class GUI extends Application {
         System.setProperty("prism.lcdtext", "false");
 
         // Basic UI settings //
-        GridPane controls = new GridPane();
-        BorderPane borderPane = new BorderPane();
+        controls = new GridPane();
+        mainView = new BorderPane();
         controls.setAlignment(Pos.TOP_CENTER);
         controls.setPadding(new Insets(10));
         controls.setVgap(5);
@@ -54,10 +57,10 @@ public class GUI extends Application {
         widthSlider = new Slider(1, 10000, 30);
         heightSlider = new Slider(1, 10000, 30);
         chanceSlider = new Slider(1, 100, 45);
-        stepsSlider = new Slider(1, 10000, 3);
+        stepsSlider = new Slider(0, 10000, 3);
         xScaleSlider = new Slider(1, 16, 1);
         yScaleSlider = new Slider(1, 16, 1);
-        LongField seedField = new LongField(Long.MIN_VALUE, Long.MAX_VALUE, 0);
+        seedField = new LongField(Long.MIN_VALUE, Long.MAX_VALUE, 0);
         seedField.setPromptText("Seed");
 
         HBox widthFrame = createSlider(
@@ -104,7 +107,7 @@ public class GUI extends Application {
         );
 
         Label seedLabel = new Label("Seed");
-        seedLabel.setTooltip(new Tooltip("The seed for the dungeon. Inputting 0 or nothing means no seed. 99999999 is the maximum."));
+        seedLabel.setTooltip(new Tooltip("The seed for the dungeon. Inputting 0 or nothing means no seed. Max: 99999999."));
         seedLabel.setPrefWidth(60);
 
         // If not checked, the seed will change on clicking Generate.
@@ -124,22 +127,16 @@ public class GUI extends Application {
         saveDataBtn.setDisable(true);
 
         // Actions
-        ImageView imageView = new ImageView();
-        generateBtn.setOnAction(e -> {
-            generate(
-                    (int) widthSlider.getValue(),
-                    (int) heightSlider.getValue(),
-                    (int) chanceSlider.getValue(),
-                    (int) stepsSlider.getValue(),
-                    (int) xScaleSlider.getValue(),
-                    (int) yScaleSlider.getValue(),
-                    seedField.getValue()
-            );
-            seedField.setValue(currentSeed);
-            imageView.setImage(imageUtil.getImage());
-            saveImgFile.setDisable(false);
-            saveDataBtn.setDisable(false);
-        });
+        imageView = new ImageView();
+        generateBtn.setOnAction(e -> generate(
+                (int) widthSlider.getValue(),
+                (int) heightSlider.getValue(),
+                (int) chanceSlider.getValue(),
+                (int) stepsSlider.getValue(),
+                (int) xScaleSlider.getValue(),
+                (int) yScaleSlider.getValue(),
+                seedField.getValue()
+        ));
 
         saveImgFile.setOnAction(e -> {
             try {
@@ -169,9 +166,9 @@ public class GUI extends Application {
             System.exit(0);
         });
 
-        borderPane.setCenter(imageView);
-        borderPane.setLeft(controls);
-        var scene = new Scene(borderPane, 960, 540);
+        mainView.setCenter(imageView);
+        mainView.setLeft(controls);
+        var scene = new Scene(mainView, 960, 540);
 
         stage.setMinWidth(960);
         stage.setMinHeight(540);
@@ -183,7 +180,7 @@ public class GUI extends Application {
     }
 
     /**
-     * Helper method for creating the dungeon.
+     * Helper method for generating the dungeon and image for it. Also updates JavaFX scenes accordingly.
      *
      * @param width Width in pixels as integer
      * @param height Height in pixels as integer
@@ -198,20 +195,41 @@ public class GUI extends Application {
             seed = 0;
         }
 
-        CelluralMapHandler cells = new CelluralMapHandler(width, height, chance, steps, seed);
+        controls.setDisable(true);
 
-        if (seed == 0) {
-            currentSeed = cells.getSeed();
-        } else {
-            currentSeed = seed;
-        }
+        // Loading icon
+        final ProgressIndicator progress = new ProgressIndicator();
+        progress.setMinSize(60, 60);
+        VBox overlay = new VBox(progress);
+        overlay.setAlignment(Pos.CENTER);
+        mainView.setCenter(overlay);
 
-        rawData = cells.mapToString();
+        long finalSeed = seed; // Variable used in lambda expression should be final or effectively final
+        new Thread(() -> {
+            CelluralMapHandler cells = new CelluralMapHandler(width, height, chance, steps, finalSeed);
 
-        imageUtil = new ImageUtil(cells.map);
-        imageUtil.scaleData(xFactor, yFactor);
+            if (finalSeed == 0) {
+                currentSeed = cells.getSeed();
+            } else {
+                currentSeed = finalSeed;
+            }
 
-        imageUtil.generateImage();
+            rawData = cells.mapToString();
+            imageUtil = new ImageUtil(cells.map);
+            imageUtil.scaleData(xFactor, yFactor);
+            imageUtil.generateImage();
+
+            // Set current values, remove loading icon and enable controls
+            Platform.runLater(() -> {
+                mainView.setCenter(imageView);
+                seedField.setValue(currentSeed);
+                imageView.setImage(imageUtil.getImage());
+                controls.getChildren().remove(overlay);
+                saveImgFile.setDisable(false);
+                saveDataBtn.setDisable(false);
+                controls.setDisable(false);
+            });
+        }).start();
     }
 
     /**
