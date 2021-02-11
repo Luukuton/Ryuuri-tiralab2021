@@ -8,10 +8,11 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.BitSet;
 
-public class ImageUtil {
+public class ImageUtilBit {
     private int width, height;
-    private int[][] data;
+    private BitSet[] data;
     private WritableImage image;
 
     /**
@@ -19,7 +20,7 @@ public class ImageUtil {
      *
      * @param data An integer 2D matrix of the dungeon
      */
-    public ImageUtil(int[][] data, int width, int height) {
+    public ImageUtilBit(BitSet[] data, int width, int height) {
         this.data = data;
         this.width = width;
         this.height = height;
@@ -33,12 +34,12 @@ public class ImageUtil {
     public WritableImage generateImage() {
         image = new WritableImage(width, height);
 
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                Color color = (data[i][j] == 0)
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Color color = (!data[x].get(y))
                         ? new Color(0.9, 0.9, 0.9, 1)
                         : new Color(0, 0, 0.5, 1);
-                image.getPixelWriter().setColor(i, j, color);
+                image.getPixelWriter().setColor(x, y, color);
             }
         }
         return image;
@@ -53,14 +54,14 @@ public class ImageUtil {
     public void scaleData(int xFactor, int yFactor) {
         width *= xFactor;
         height *= yFactor;
+        BitSet[] scaledData = new BitSet[width];
+        for (int j = 0; j < width; j++) {
+            scaledData[j] = new BitSet(height);
+        }
 
-        int rows = data.length * xFactor;
-        int cols = data[0].length * yFactor;
-        int[][] scaledData = new int[rows][cols];
-
-        for (int x = 0; x < rows; x++) {
-            for (int y = 0; y < cols; y++) {
-                scaledData[x][y] = data[x / xFactor][y / yFactor];
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                scaledData[x].set(y, data[x / xFactor].get(y / yFactor));
             }
         }
 

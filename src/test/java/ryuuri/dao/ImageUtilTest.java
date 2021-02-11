@@ -1,11 +1,12 @@
 package ryuuri.dao;
 
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -16,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ImageUtilTest {
     private ImageUtil imageUtil;
-    int[][] data;
 
     @BeforeEach
     void setUp() {
         // 3x3, 25%, 0 steps, seed: -8653063932943180940
-        imageUtil = new ImageUtil(new int[][] {{1, 1, 1}, {0, 0, 0}, {1, 0, 1}});
+
+        imageUtil = new ImageUtil(new int[][] {{1, 1, 1}, {0, 0, 0}, {1, 0, 1}}, 3, 3);
     }
 
     @Test

@@ -5,9 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.stage.FileChooser;
-import ryuuri.dao.ImageUtil;
-import ryuuri.mapgen.CelluralMapHandler;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -20,6 +17,9 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+
+import ryuuri.dao.ImageUtil;
+import ryuuri.mapgen.CelluralMapHandler;
 
 /**
  * A class for the application GUI.
@@ -228,7 +228,7 @@ public class GUI extends Application {
             }
 
             rawData = cells.mapToString();
-            imageUtil = new ImageUtil(cells.map);
+            imageUtil = new ImageUtil(cells.map, width, height);
             imageUtil.scaleData(xFactor, yFactor);
             imageUtil.generateImage();
 

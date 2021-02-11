@@ -44,7 +44,7 @@ Tests can be performed with:
 gradlew test
 ```
 
-and benchmarks with: 
+and benchmarks (can take up to 10 minutes on a slow computer!) with: 
 ```
 gradlew clean benchmark
 ```

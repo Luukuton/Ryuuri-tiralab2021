@@ -23,7 +23,7 @@ The algorithm Ryuuri uses is based on [Conway's Game of Life](https://en.wikiped
 - **Height** in pixels (integer, >= 1)
 - **Probability** for the cell (pixel) to live a cycle (integer, 0 - 100)
 - **Simulation steps** or **cycles** (integer, >= 0)
-- **Seed** for the Random Number Generator (integer)
+- **Seed** for the Random Number Generator (long)
   - Currently using Java's implementation of Random
 - **Birth** and **Death limits** for cells (pixels) if found necessary
   - Currently hard coded as 4 and 3
