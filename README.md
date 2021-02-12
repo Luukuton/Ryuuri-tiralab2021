@@ -6,6 +6,18 @@ The name, Ryuuri (流離), is Japanese and means _"to wander in a foreign countr
 
 ![preview of the application](documentation/images/preview.gif)
 
+### Examples of some dungeons
+
+1. 200x200 px, 41 %, 10 steps, x & y scaled by 2, seed: 2352837519905149105, no walls, logic V1
+2. 400x400 px, 40 %, 5 steps x & y not scaled, seed: 8701462806124051100, no walls, logic V1, connected
+3. 200x200 px, 40 %, 5 steps, x & y scaled by 2, seed: 1365928333090366521, no walls, logic V2, connected
+4. 400x400 px, 45 %, 5 steps x & y not scaled, seed: -706147279899605297, no walls, logic V2, connected
+
+![dungeon 1](documentation/images/200x200_41%25_10steps_2x2scale_logicV1_nowalls_seed2352837519905149105.png)
+![dungeon 2](documentation/images/400x400_40%25_5steps_1x1scale_logicV1_nowalls_connected_seed8701462806124051100.png)
+![dungeon 3](documentation/images/200x200_40%25_5steps_2x2scale_logicV2_nowalls_connected_seed1365928333090366521.png)
+![dungeon 4](documentation/images/400x400_45%25_5steps_1x1scale_logicV2_nowalls_connected_seed-706147279899605297.png)
+
 ## Weekly reports
 
 [Week 4](documentation/weekly_reports/week4.md)
@@ -79,12 +91,3 @@ Results can be viewed by opening _target/site/checkstyle.html_ in a browser.
 ## Dependencies
 * Java 11+
 * Gradle 6.8.1+
-
-
-### Examples of some dungeons
-
-1. 200x200 px, 40 %, 2 steps, x & y scaled by 2, seed: 7482077468331371336
-2. 200x200 px, 47 %, 5 steps, x & y scaled by 2, seed: 8684197241994208105
-
-![preview of the application](documentation/images/200x200_47%25_2steps_2x2scale_7482077468331371336.png)
-![preview of the application](documentation/images/200x200_40%25_5steps_2x2scale_8684197241994208105.png)

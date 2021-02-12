@@ -36,6 +36,3 @@ Next week I will be improving the UI and doing testing/benchmarking. Also, I'll 
 
 1. 200x200 px, 40 %, 2 steps, x & y scaled by 2, seed: 7482077468331371336
 2. 200x200 px, 47 %, 5 steps, x & y scaled by 2, seed: 8684197241994208105
-
-![preview of the application](../images/200x200_47%25_2steps_2x2scale_7482077468331371336.png)
-![preview of the application](../images/200x200_40%25_5steps_2x2scale_8684197241994208105.png)
