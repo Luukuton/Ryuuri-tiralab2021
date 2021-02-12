@@ -1,4 +1,4 @@
-package ryuuri.dao;
+package ryuuri.io;
 
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;

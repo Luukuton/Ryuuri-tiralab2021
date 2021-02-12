@@ -1,37 +1,40 @@
 package ryuuri.ui;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.stage.FileChooser;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.*;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.scene.Scene;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
+import javafx.scene.layout.*;
+import javafx.scene.control.*;
+import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.collections.FXCollections;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import ryuuri.dao.ImageUtil;
+import ryuuri.io.ImageUtil;
 import ryuuri.mapgen.CelluralMapHandler;
+
+import javax.imageio.ImageIO;
 
 /**
  * A class for the application GUI.
  */
-
 public class GUI extends Application {
     private BorderPane mainView;
     private GridPane controls;
     private Slider widthSlider, heightSlider, chanceSlider, stepsSlider, xScaleSlider, yScaleSlider;
-    private Button generateBtn, saveImgFile, saveDataBtn;
-    private CheckBox seedLocked;
-    private ChoiceBox<String> algorithmVersion;
+    private Button saveImgFile, saveDataBtn;
+    private CheckBox seedLocked, connected;
+    private ChoiceBox<String> algorithmInitVersion, algorithmLogicVersion;
     private ImageView imageView;
     private ImageUtil imageUtil;
     private LongField seedField;
@@ -57,12 +60,12 @@ public class GUI extends Application {
         controls.setHgap(5);
 
         // Input //
-        widthSlider = new Slider(1, 10000, 30);
-        heightSlider = new Slider(1, 10000, 30);
-        chanceSlider = new Slider(1, 100, 45);
+        widthSlider = new Slider(1, 10000, 50);
+        heightSlider = new Slider(1, 10000, 50);
+        chanceSlider = new Slider(1, 100, 40);
         stepsSlider = new Slider(0, 10000, 3);
-        xScaleSlider = new Slider(1, 16, 1);
-        yScaleSlider = new Slider(1, 16, 1);
+        xScaleSlider = new Slider(1, 16, 4);
+        yScaleSlider = new Slider(1, 16, 4);
         seedField = new LongField(Long.MIN_VALUE, Long.MAX_VALUE, 0);
         seedField.setPromptText("Seed");
 
@@ -70,21 +73,21 @@ public class GUI extends Application {
                 widthSlider,
                 "x (px)",
                 "Width of the dungeon in pixels.",
-                30,
+                50,
                 10000
         );
         HBox heightFrame = createSlider(
                 heightSlider,
                 "y (px)",
                 "Height of the dungeon in pixels.",
-                30,
+                50,
                 10000
         );
         HBox chanceFrame = createSlider(
                 chanceSlider,
                 "%",
                 "Chance for the cells (pixels) to die on each step.",
-                45,
+                40,
                 100
         );
         HBox stepsFrame = createSlider(
@@ -98,16 +101,18 @@ public class GUI extends Application {
                 xScaleSlider,
                 "x (factor)",
                 "Times to scale the x axis of the image.",
-                1,
+                4,
                 16
         );
         HBox yScaleFrame = createSlider(
                 yScaleSlider,
                 "y (factor)",
                 "Times to scale the y axis of the image.",
-                1,
+                4,
                 16
         );
+
+        String controlStyling = "-fx-spacing: 5px; -fx-background-color: white; -fx-padding: 10; -fx-font-size: 12; -fx-alignment: baseline-left;";
 
         Label seedLabel = new Label("Seed");
         seedLabel.setTooltip(new Tooltip("The seed for the dungeon. Inputting 0 or nothing means no seed. Max: 99999999."));
@@ -117,22 +122,39 @@ public class GUI extends Application {
         seedLocked = new CheckBox("Lock");
 
         HBox seedFrame = new HBox(seedLabel, seedField, seedLocked);
-        seedFrame.setStyle("-fx-background-color: white; -fx-padding:10; -fx-font-size: 12; -fx-alignment: baseline-left;");
+        seedFrame.setStyle(controlStyling);
 
-        algorithmVersion = new ChoiceBox<>();
-        ObservableList<String> items = FXCollections.observableArrayList("Ver. 1", "Ver. 2");
-        algorithmVersion.setItems(items);
-        algorithmVersion.getSelectionModel().select(0);
+        algorithmInitVersion = new ChoiceBox<>();
+        algorithmInitVersion.setItems(FXCollections.observableArrayList("No Walls", "Walls"));
+        algorithmInitVersion.getSelectionModel().select(0);
+        algorithmInitVersion.setPrefWidth(100);
+        algorithmInitVersion.setPrefHeight(25);
 
-        algorithmVersion.setPrefWidth(100);
-        algorithmVersion.setPrefHeight(25);
+        algorithmLogicVersion = new ChoiceBox<>();
+        algorithmLogicVersion.setItems(FXCollections.observableArrayList("Logic Ver. 1", "Logic Ver. 2"));
+        algorithmLogicVersion.getSelectionModel().select(0);
+        algorithmLogicVersion.setPrefWidth(100);
+        algorithmLogicVersion.setPrefHeight(25);
+
+        Label versionLabel = new Label("Versions");
+        versionLabel.setTooltip(new Tooltip("Two different algorithm version for dungeon initialization and generation logic."));
+        versionLabel.setPrefWidth(60);
+
+        HBox versionFrame = new HBox(versionLabel, algorithmInitVersion, algorithmLogicVersion);
+        versionFrame.setStyle(controlStyling);
+
+        connected = new CheckBox("Should the dungeon be connected?");
 
         // Buttons //
-        generateBtn = new Button("Generate");
+        Button generateBtn = new Button("Generate");
         saveImgFile = new Button("Save image as");
         saveDataBtn = new Button("Copy data to clipboard");
-        saveDataBtn = new Button("Copy data to clipboard");
         // importBtn = new Button("Import raw data");
+
+        HBox buttons = new HBox(generateBtn, saveImgFile, saveDataBtn);
+        buttons.setStyle("-fx-spacing: 5px; -fx-alignment: baseline-left;");
+
+        generateBtn.setStyle("-fx-padding: 10px; -fx-alignment: baseline-right;");
 
         saveImgFile.setDisable(true);
         saveDataBtn.setDisable(true);
@@ -160,17 +182,16 @@ public class GUI extends Application {
         saveDataBtn.setOnAction(e -> copyRawData());
 
         int row = 0;
-        controls.add(widthFrame,  1, row);
-        controls.add(heightFrame, 1, ++row);
-        controls.add(chanceFrame, 1, ++row);
-        controls.add(stepsFrame,  1, ++row);
-        controls.add(xScaleFrame, 1, ++row);
-        controls.add(yScaleFrame, 1, ++row);
-        controls.add(seedFrame,   1, ++row);
-        controls.add(generateBtn, 1, ++row);
-        controls.add(saveImgFile, 1, ++row);
-        controls.add(saveDataBtn, 1, ++row);
-        controls.add(algorithmVersion, 1, ++row);
+        controls.add(connected,   0, row);
+        controls.add(widthFrame,  0, ++row);
+        controls.add(heightFrame, 0, ++row);
+        controls.add(chanceFrame, 0, ++row);
+        controls.add(stepsFrame,  0, ++row);
+        controls.add(xScaleFrame, 0, ++row);
+        controls.add(yScaleFrame, 0, ++row);
+        controls.add(versionFrame, 0, ++row);
+        controls.add(seedFrame,   0, ++row);
+        controls.add(buttons, 0, ++row);
 
         // Close all child windows when exiting the main app
         stage.setOnCloseRequest(e -> {
@@ -180,13 +201,12 @@ public class GUI extends Application {
 
         mainView.setCenter(imageView);
         mainView.setLeft(controls);
-        var scene = new Scene(mainView, 960, 540);
+        var scene = new Scene(mainView);
 
         stage.setMinWidth(960);
-        stage.setMinHeight(540);
+        stage.setMinHeight(570);
         stage.setTitle("Ryuuri");
-        // TODO: Add an icon
-        // stage.getIcons().add(new Image(""));
+        stage.getIcons().add(new Image("ryuuri-logo.png"));
         stage.setScene(scene);
         stage.show();
     }
@@ -218,8 +238,32 @@ public class GUI extends Application {
 
         long finalSeed = seed; // Variable used in lambda expression should be final or effectively final
         new Thread(() -> {
-            int version = algorithmVersion.getSelectionModel().getSelectedItem().equals("Ver. 2") ? 2 : 1;
-            CelluralMapHandler cells = new CelluralMapHandler(width, height, chance, steps, finalSeed, version);
+            boolean outerWalls = algorithmInitVersion.getSelectionModel().getSelectedItem().equals("Walls");
+            int logicVersion = algorithmLogicVersion.getSelectionModel().getSelectedItem().equals("Logic Ver. 2") ? 2 : 1;
+
+            CelluralMapHandler cells = new CelluralMapHandler(width, height, chance, steps, connected.isSelected(), finalSeed);
+            cells.setAlgorithmVersions(outerWalls, logicVersion);
+
+            try {
+                cells.generateDungeon();
+            } catch (StackOverflowError err) {
+                Platform.runLater(() -> {
+                    Label stackOverflow = new Label("Stack overflow error! Try generating without the dungeon having to be connected or with lower values. Changing the logic version might help too.");
+                    mainView.setCenter(stackOverflow);
+                    controls.getChildren().remove(overlay);
+                    controls.setDisable(false);
+                });
+                return;
+            } catch (OutOfMemoryError err) {
+                Platform.runLater(() -> {
+                    Label outOfMemory = new Label("Out of memory! Try generating with less steps or smaller dimensions.");
+                    mainView.setCenter(outOfMemory);
+                    controls.getChildren().remove(overlay);
+                    controls.setDisable(false);
+                });
+                return;
+            }
+
 
             if (finalSeed == 0) {
                 currentSeed = cells.getSeed();

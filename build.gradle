@@ -10,7 +10,11 @@ plugins {
 mainClassName = "ryuuri.Main"
 
 group 'fi.luukuton'
-version '0.2-SNAPSHOT'
+version '0.3-SNAPSHOT'
+
+tasks.withType(JavaExec) {
+    jvmArgs = ['-Xss64M']
+}
 
 repositories {
     jcenter()
@@ -45,6 +49,7 @@ test {
 }
 
 task benchmark(type: Test) {
+    jvmArgs '-Xss64M'
     useJUnitPlatform {
         includeTags 'Benchmark'
         excludeTags 'UnitTest'

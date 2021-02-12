@@ -8,6 +8,8 @@ The name, Ryuuri (流離), is Japanese and means _"to wander in a foreign countr
 
 ## Weekly reports
 
+[Week 4](documentation/weekly_reports/week4.md)
+
 [Week 3](documentation/weekly_reports/week3.md)
 
 [Week 2](documentation/weekly_reports/week2.md)
@@ -44,7 +46,7 @@ Tests can be performed with:
 gradlew test
 ```
 
-and benchmarks (can take up to 10 minutes on a slow computer!) with: 
+and benchmarks with: 
 ```
 gradlew clean benchmark
 ```

@@ -1,4 +1,4 @@
-package ryuuri.dao;
+package ryuuri.io;
 
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
@@ -9,6 +9,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * An utility to scale and generate an image of the dungeon.
+ */
 public class ImageUtil {
     private int width, height;
     private int[][] data;
@@ -85,7 +88,7 @@ public class ImageUtil {
         try {
             BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
             ImageIO.write(bufferedImage, "png", file);
-        } catch (IOException ignored) {
+        } catch (IOException | IllegalArgumentException ignored) {
         }
     }
 

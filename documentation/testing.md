@@ -22,6 +22,15 @@ gradlew clean benchmark
 ```
 
 In contrast with unit testing, benchmarking can take up a lot of time. 
-Currently, on system with __Ryzen 1700X @ 3.8GHz and 16GB DDR4 @ 3200MHz CL14__ it takes around 4 minutes.
+Currently, on system with __Ryzen 1700X @ 3.8GHz and 16GB DDR4 @ 3200MHz CL14__:
 
-There are currently two large text files in the test resources which include pre-generated data to test against the benchmark data.
+
+**Current results:**
+
+```
+Benchmark STANDARD_OUT
+    Time (100x100px / 100 000 steps): 22822ms
+    Time (1000x1000px / 1000 steps / Logic V1): 22344ms
+    Time (1000x1000px / 1000 steps / Logic V2): 21405ms
+    Time (1000x1000px / 1000 steps / Logic V2 / traversable): 21452ms
+```
