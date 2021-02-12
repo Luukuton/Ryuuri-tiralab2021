@@ -24,9 +24,6 @@ gradlew clean benchmark
 In contrast with unit testing, benchmarking can take up a lot of time. 
 Currently, on system with __Ryzen 1700X @ 3.8GHz and 16GB DDR4 @ 3200MHz CL14__:
 
-
-**Current results:**
-
 ```
 Benchmark STANDARD_OUT
     Time (100x100px / 100 000 steps): 22822ms
