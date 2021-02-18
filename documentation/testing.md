@@ -14,6 +14,22 @@ The JavaFX GUI has been excluded from these.
 The tests are made mainly with the help of pre-generated data and seeds for the random number generator. 
 ImageUtil class is tested with two images found in the test resources.
 
+## Test coverage
+
+### JaCoCo
+
+![JaCoCo all](images/jacoco_all.png)
+
+![JaCoCo CelluralMapHandler](images/jacococo_CelluralMapHandler.png)
+
+![JaCoCo ImageUtil](images/jacoco_ImageUtil.png)
+
+### Dynamic chart by CodeCov
+
+> The top section represents the entire project. Proceeding with folders and finally individual files. The size and color of each slice is representing the number of statements and the coverage, respectively.
+
+![CodeCove icicle](https://codecov.io/gh/Luukuton/Ryuuri-tiralab2021/branch/main/graphs/icicle.svg)
+
 ## Benchmarking
 
 Performed with:
