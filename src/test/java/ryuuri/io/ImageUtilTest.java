@@ -21,8 +21,7 @@ class ImageUtilTest {
     @BeforeEach
     void setUp() {
         // 3x3, 25%, 0 steps, seed: -8653063932943180940
-
-        imageUtil = new ImageUtil(new int[][] {{1, 1, 1}, {0, 0, 0}, {1, 0, 1}}, 3, 3);
+        imageUtil = new ImageUtil(new int[][] {{1, 1, 1}, {0, 0, 0}, {1, 0, 1}});
     }
 
     @Test

@@ -22,10 +22,10 @@ public class ImageUtil {
      *
      * @param data An integer 2D matrix of the dungeon
      */
-    public ImageUtil(int[][] data, int width, int height) {
+    public ImageUtil(int[][] data) {
         this.data = data;
-        this.width = width;
-        this.height = height;
+        this.width = data.length;
+        this.height = data[0].length;
     }
 
     /**

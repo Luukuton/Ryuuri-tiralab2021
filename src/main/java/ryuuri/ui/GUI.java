@@ -162,7 +162,7 @@ public class GUI extends Application {
             }
 
             rawData = cells.mapToString();
-            imageUtil = new ImageUtil(cells.map, width, height);
+            imageUtil = new ImageUtil(cells.map);
             imageUtil.scaleData(xFactor, yFactor);
             imageUtil.generateImage();
 
@@ -375,11 +375,10 @@ public class GUI extends Application {
         });
 
         imageView.setOnScroll(e -> {
-            double delta = e.getDeltaY();
             Rectangle2D viewport = imageView.getViewport();
 
             double scale = clamp(
-                    Math.pow(1.01, delta),
+                    Math.pow(1.01, e.getDeltaY()),
                     Math.min(0 / viewport.getWidth(), 0 / viewport.getHeight()),
                     Math.max(imageView.getImage().getWidth() / viewport.getWidth(), imageView.getImage().getHeight() / viewport.getHeight())
             );
@@ -388,7 +387,6 @@ public class GUI extends Application {
 
             double newWidth = viewport.getWidth() * scale;
             double newHeight = viewport.getHeight() * scale;
-
             double newMinX = clamp(
                     mouse.getX() - (mouse.getX() - viewport.getMinX()) * scale,
                     0,
@@ -424,13 +422,8 @@ public class GUI extends Application {
      */
     private void shiftImage(Point2D delta) {
         Rectangle2D viewport = imageView.getViewport();
-
-        double width = imageView.getImage().getWidth() ;
-        double height = imageView.getImage().getHeight() ;
-
-        double maxX = width - viewport.getWidth();
-        double maxY = height - viewport.getHeight();
-
+        double maxX = imageView.getImage().getWidth() - viewport.getWidth();
+        double maxY = imageView.getImage().getHeight() - viewport.getHeight();
         double minX = clamp(viewport.getMinX() - delta.getX(), 0, maxX);
         double minY = clamp(viewport.getMinY() - delta.getY(), 0, maxY);
 
