@@ -53,4 +53,7 @@ The image is created pixel by pixel from the 2D matrix that the algorithm output
 
 Made with JavaFX 15.
 
-Sliders use [this (modified) gist](https://gist.github.com/jewelsea/1962045) for dynamic text fields.
+- [This gist](https://gist.github.com/jewelsea/1962045) (heavily modified) is used with sliders for dynamic text fields.
+
+- [This gist](https://gist.github.com/james-d/ce5ec1fd44ce6c64e81a) (heavily modified) is used for zooming the image in the GUI.
+
