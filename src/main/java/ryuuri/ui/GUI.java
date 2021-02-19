@@ -245,7 +245,7 @@ public class GUI extends Application {
         stepsSlider = new Slider(0, 10000, 3);
         xScaleSlider = new Slider(1, 16, 4);
         yScaleSlider = new Slider(1, 16, 4);
-        seedField = new LongField(Long.MIN_VALUE, Long.MAX_VALUE, 0);
+        seedField = new LongField(Long.MIN_VALUE, Long.MAX_VALUE, 0, 0);
         seedField.setPromptText("Seed");
 
         HBox widthFrame = createSlider(
@@ -300,7 +300,7 @@ public class GUI extends Application {
         String controlStyling = "-fx-spacing: 5px; -fx-background-color: white; -fx-padding: 10; -fx-font-size: 12; -fx-alignment: baseline-left;";
 
         Label seedLabel = new Label("Seed");
-        seedLabel.setTooltip(new Tooltip("The seed for the dungeon. Inputting 0 or nothing means no seed. Max: 99999999."));
+        seedLabel.setTooltip(new Tooltip("The seed for the dungeon. Inputting 0 or anything else than a number means no seed. Max: 2^63-1 & min: -2^63."));
         seedLabel.setPrefWidth(60);
 
         // If not checked, the seed will change on clicking Generate.

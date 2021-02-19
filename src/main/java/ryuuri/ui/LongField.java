@@ -9,7 +9,15 @@ public class LongField extends TextField {
     private final LongProperty value;
     private final long minValue, maxValue;
 
-    public LongField(long minValue, long maxValue, long initialValue) {
+    /**
+     * Creates a LongField holding a long value with given restrictions.
+     *
+     * @param minValue Minimum value as long
+     * @param maxValue Maximum value as long
+     * @param initialValue Starting value as long
+     * @param defaultValue Default or a fallback value on error as long
+     */
+    public LongField(long minValue, long maxValue, long initialValue, long defaultValue) {
         if (minValue > maxValue) {
             throw new IllegalArgumentException(
                     "LongField min value " + minValue + " > " + maxValue
@@ -44,6 +52,9 @@ public class LongField extends TextField {
                 }
 
                 if (!(newValue.longValue() == 0 && (textProperty().get() == null || "".equals(textProperty().get())))) {
+                    // FIXME: IllegalArgumentException when erasing the first digit from a round number.
+                    // Eg. 10000, 20000, 30..
+                    // Platform.runLater(() -> longField.setText(newValue.toString())); solves this but there are severe side effects.
                     longField.setText(newValue.toString());
                 }
             }
@@ -61,24 +72,60 @@ public class LongField extends TextField {
                 return;
             }
 
-            final long longValue = Long.parseLong(newValue);
+            long longValue;
+            try {
+                longValue = Long.parseLong(newValue);
+                if (longField.minValue > longValue || longValue > longField.maxValue) {
+                    textProperty().setValue(oldValue);
+                }
 
-            if (longField.minValue > longValue || longValue > longField.maxValue) {
-                textProperty().setValue(oldValue);
+                value.set(Long.parseLong(textProperty().get()));
+            } catch (NumberFormatException e) {
+                longValue = defaultValue;
+                if (longField.minValue > longValue || longValue > longField.maxValue) {
+                    textProperty().setValue(oldValue);
+                }
+
+                value.set(defaultValue);
             }
-
-            value.set(Long.parseLong(textProperty().get()));
         });
     }
 
+    /**
+     * Overloads the constructor with default of 1.
+     *
+     * @param minValue Minimum value as long
+     * @param maxValue Maximum value as long
+     * @param initialValue Starting value as long
+     */
+    public LongField(long minValue, long maxValue, long initialValue) {
+        this(minValue, maxValue, initialValue, 1);
+    }
+
+    /**
+     * Gets the value of the LongField.
+     *
+     * @return Value as long
+     */
     public long getValue() {
         return value.getValue();
     }
 
+    /**
+     * Sets the value of the LongField.
+     *
+     * @param newValue New value as long
+     */
     public void setValue(long newValue) {
         value.setValue(newValue);
     }
 
+
+    /**
+     * Gets the LongProperty of the class
+     *
+     * @return LongProperty
+    */
     public LongProperty valueProperty() {
         return value;
     }

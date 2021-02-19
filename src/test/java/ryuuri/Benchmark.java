@@ -36,7 +36,7 @@ class Benchmark {
                 .readAllBytes()
         );
 
-        results.add("Time (1000x1000px / 1000 steps / Logic V1): " + (endTime  - startTime) + "ms");
+        results.add("Time (1000x1000px / 1000 steps / V1): " + (endTime  - startTime) + "ms");
         assertEquals(expected, output);
     }
 
@@ -56,7 +56,7 @@ class Benchmark {
                 .readAllBytes()
         );
 
-        results.add("Time (1000x1000px / 1000 steps / Logic V2): " + (endTime  - startTime) + "ms");
+        results.add("Time (1000x1000px / 1000 steps / V2): " + (endTime  - startTime) + "ms");
         assertEquals(expected, output);
     }
 
@@ -76,7 +76,7 @@ class Benchmark {
                 .readAllBytes()
         );
 
-        results.add("Time (1000x1000px / 1000 steps / Logic V2 / traversable): " + (endTime  - startTime) + "ms");
+        results.add("Time (1000x1000px / 1000 steps / V2 / traversable): " + (endTime  - startTime) + "ms");
         assertEquals(expected, output);
     }
 
@@ -96,6 +96,64 @@ class Benchmark {
 
         results.add("Time (100x100px / 100 000 steps): " + (endTime  - startTime) + "ms");
         assertEquals(expected, output);
+    }
+
+    @Test
+    @Tag("Benchmark")
+    void lotsOfRandomDungeonsV1() {
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < 30000; i++) {
+            CelluralMapHandler cell = new CelluralMapHandler(100, 100, 40, 2, false);
+            cell.generateDungeon();
+        }
+        long endTime = System.currentTimeMillis();
+
+        results.add("Time (1 000 000 random 100x100 / 2 step / V1 dungeons): " + (endTime  - startTime) + "ms");
+        assertTrue(true);
+    }
+
+    @Test
+    @Tag("Benchmark")
+    void lotsOfRandomDungeonsV2() {
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < 30000; i++) {
+            CelluralMapHandler cell = new CelluralMapHandler(100, 100, 40, 2, false);
+            cell.setAlgorithmVersions(false, 2);
+            cell.generateDungeon();
+        }
+        long endTime = System.currentTimeMillis();
+
+        results.add("Time (1 000 000 random 100x100 / 2 step / V2 dungeons): " + (endTime  - startTime) + "ms");
+        assertTrue(true);
+    }
+
+    @Test
+    @Tag("Benchmark")
+    void lotsOfRandomTraversableDungeonsV1() {
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < 30000; i++) {
+            CelluralMapHandler cell = new CelluralMapHandler(100, 100, 40, 2, true);
+            cell.generateDungeon();
+        }
+        long endTime = System.currentTimeMillis();
+
+        results.add("Time (1 000 000 random connected 100x100 / 2 step / V1 dungeons): " + (endTime  - startTime) + "ms");
+        assertTrue(true);
+    }
+
+    @Test
+    @Tag("Benchmark")
+    void lotsOfRandomTraversableDungeonsV2() {
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < 30000; i++) {
+            CelluralMapHandler cell = new CelluralMapHandler(100, 100, 40, 2, true);
+            cell.setAlgorithmVersions(false, 2);
+            cell.generateDungeon();
+        }
+        long endTime = System.currentTimeMillis();
+
+        results.add("Time (1 000 000 random connected 100x100 / 2 step / V2 dungeons): " + (endTime  - startTime) + "ms");
+        assertTrue(true);
     }
 
     @AfterAll

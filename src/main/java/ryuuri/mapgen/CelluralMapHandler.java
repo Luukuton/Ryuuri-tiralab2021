@@ -25,7 +25,7 @@ public class CelluralMapHandler {
      * @param aliveChance the chance for the cells (pixels) to die as integer
      * @param steps how many simulation steps to do as integer
      * @param connected true if the dungeon has to be completely connected (traversable)
-     * @param seed seed for the random number generator as integer
+     * @param seed seed for the random number generator as long
      */
     public CelluralMapHandler(int width, int height, int aliveChance, int steps, boolean connected, long seed) {
         this.outerWalls = false;
@@ -41,9 +41,6 @@ public class CelluralMapHandler {
         this.rand = new Random(this.seed);
 
         map = new int[width][height];
-        for (int x = 0; x < width; x++) {
-            Arrays.fill(map[x], 0);
-        }
     }
 
     /**
@@ -122,7 +119,7 @@ public class CelluralMapHandler {
             }
             return 0;
         } else {
-            if (map[x][y] > 0) {
+            if (map[x][y] == 1) {
                 return (alive < 3) ? 0 : 1; // deathLimit
             } else {
                 return (alive > 4) ? 1 : 0; // birthLimit
@@ -131,7 +128,7 @@ public class CelluralMapHandler {
     }
 
     /**
-     * Counts all the neighbours that are alive for the specified cell (coordinate) in the matrix
+     * Counts all the neighbours that are alive for the specified cell (coordinate) in the matrix.
      *
      * @param x x coordinate as integer
      * @param y y coordinate as integer
@@ -190,8 +187,9 @@ public class CelluralMapHandler {
      * @return amount of open cells as integer
      */
     public int connectDungeon(int[][] map) {
-        int x = height / 2;
+        int x = width / 2;
         int y = height / 2;
+        map[x][y] = 0;
 
         int newCell = 2;
         int filled = connectDungeonUtil(map, x, y, map[x][y], newCell);
