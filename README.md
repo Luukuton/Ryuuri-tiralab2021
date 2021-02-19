@@ -20,6 +20,8 @@ The name, Ryuuri (流離), is Japanese and means _"to wander in a foreign countr
 
 ## Weekly reports
 
+[Week 5](documentation/weekly_reports/week5.md)
+
 [Week 4](documentation/weekly_reports/week4.md)
 
 [Week 3](documentation/weekly_reports/week3.md)
@@ -62,6 +64,11 @@ and benchmarks with:
 ```
 gradlew clean benchmark
 ```
+or:
+```
+gradlew clean benchmark -Dtest.type=bit
+```
+for BitSet[] benchmarks.
 
 Code coverage can be created with:
 ```

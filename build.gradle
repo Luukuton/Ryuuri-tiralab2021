@@ -10,7 +10,7 @@ plugins {
 mainClassName = "ryuuri.Main"
 
 group 'fi.luukuton'
-version '0.3-SNAPSHOT'
+version '0.4-SNAPSHOT'
 
 tasks.withType(JavaExec) {
     jvmArgs = ['-Xss64M']
@@ -32,6 +32,7 @@ dependencies {
     implementation 'org.openjfx:javafx-swing:15.0.1:win'
     implementation 'org.openjfx:javafx-swing:15.0.1:linux'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
@@ -49,6 +50,7 @@ test {
 }
 
 task benchmark(type: Test) {
+    systemProperty 'test.type', System.getProperty('test.type')
     jvmArgs '-Xss64M'
     useJUnitPlatform {
         includeTags 'Benchmark'
