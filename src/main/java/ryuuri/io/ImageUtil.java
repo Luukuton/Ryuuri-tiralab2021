@@ -1,6 +1,6 @@
 package ryuuri.io;
 
-import javafx.scene.image.WritableImage;
+import  javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.embed.swing.SwingFXUtils;
 
@@ -54,6 +54,10 @@ public class ImageUtil {
      * @param yFactor How many times to scale in height as integer
      */
     public void scaleData(int xFactor, int yFactor) {
+        if (xFactor <= 1 && yFactor <= 1) {
+            return;
+        }
+
         width *= xFactor;
         height *= yFactor;
 

@@ -139,7 +139,7 @@ public class GUI extends Application {
                 cells.generateDungeon();
             } catch (StackOverflowError err) {
                 Platform.runLater(() -> {
-                    Label stackOverflow = new Label("Stack overflow error! Try generating without the dungeon having to be connected or with lower values. Changing the logic version might help too.");
+                    Label stackOverflow = new Label("Stack overflow error! Try generating without the dungeon having to be connected or with lower values. \nChanging the logic version might help too.");
                     mainView.setCenter(stackOverflow);
                     controls.getChildren().remove(overlay);
                     controls.setDisable(false);
@@ -161,10 +161,20 @@ public class GUI extends Application {
                 currentSeed = finalSeed;
             }
 
-            rawData = cells.mapToString();
-            imageUtil = new ImageUtil(cells.map);
-            imageUtil.scaleData(xFactor, yFactor);
-            imageUtil.generateImage();
+            try {
+                imageUtil = new ImageUtil(cells.map);
+                imageUtil.scaleData(xFactor, yFactor);
+                imageUtil.generateImage();
+                rawData = cells.mapToString();
+            } catch (OutOfMemoryError err) {
+                Platform.runLater(() -> {
+                    Label outOfMemory = new Label("Out of memory on trying to scale the dungeon. Try to lower the scale factors.");
+                    mainView.setCenter(outOfMemory);
+                    controls.getChildren().remove(overlay);
+                    controls.setDisable(false);
+                });
+                return;
+            }
 
             // Set current values, remove loading icon and enable controls
             Platform.runLater(() -> {

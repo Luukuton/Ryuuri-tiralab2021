@@ -234,7 +234,8 @@ class CelluralMapHandlerTest {
         // Automatic check
         assertTrue(cell.isDungeonConnected());
 
-        // Now, let's lie to the class that it's not connected after the generation, so that it has to check it manually.
+        // Now after the generation, let's lie to the class that it's not connected,
+        // so that it has to check the connectivity manually.
         cell.setConnected(false);
         assertTrue(cell.isDungeonConnected());
     }
