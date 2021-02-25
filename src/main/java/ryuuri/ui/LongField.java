@@ -5,6 +5,8 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
+import java.util.regex.Pattern;
+
 public class LongField extends TextField {
     private final LongProperty value;
     private final long minValue, maxValue;
@@ -61,7 +63,7 @@ public class LongField extends TextField {
         });
 
         this.addEventFilter(KeyEvent.KEY_TYPED, keyEvent -> {
-            if (!"0123456789".contains(keyEvent.getCharacter())) {
+            if (!"-0123456789".contains(keyEvent.getCharacter())) {
                 keyEvent.consume();
             }
         });
@@ -69,6 +71,12 @@ public class LongField extends TextField {
         this.textProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue == null || "".equals(newValue)) {
                 value.setValue(0);
+                return;
+            } else if (newValue.equals("-")) { // For negative values
+                textProperty().setValue("-");
+                return;
+            } else if (!Pattern.matches("^-?[0-9]\\d*$", newValue)) {
+                textProperty().setValue(String.valueOf(defaultValue));
                 return;
             }
 
