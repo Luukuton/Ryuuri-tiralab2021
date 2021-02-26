@@ -104,19 +104,20 @@ public class CelluralMapHandler extends CelluralMapAbstract<int[][]> {
                 if (alive < 2) { // deathLimit
                     return 0;
                 }
-            } else {
-                if (alive >= 5) { // secondary birthLimit
-                    return 1;
-                }
             }
+
+            if (alive >= 5) { // secondary birthLimit
+                return 1;
+            }
+
             return 0;
-        } else {
-            if (map[x][y] == 1) {
-                return (alive < 3) ? 0 : 1; // deathLimit
-            } else {
-                return (alive > 4) ? 1 : 0; // birthLimit
-            }
         }
+
+        if (map[x][y] == 1) {
+            return (alive < 3) ? 0 : 1; // deathLimit
+        }
+
+        return (alive > 4) ? 1 : 0; // birthLimit
     }
 
     /**

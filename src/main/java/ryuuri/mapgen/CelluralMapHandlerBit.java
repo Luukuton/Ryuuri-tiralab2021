@@ -106,18 +106,18 @@ public class CelluralMapHandlerBit extends CelluralMapAbstract<BitSet[]> {
                 if (alive < 2) { // deathLimit
                     return false;
                 }
-            } else {
-                return alive >= 5; // secondary birthLimit
             }
-            return false;
-        } else {
-            if (map[x].get(y)) {
-                return !(alive < 3); // deathLimit
-            } else {
-                return (alive > 4); // birthLimit
-            }
+
+            return alive >= 5; // secondary birthLimit
         }
+
+        if (map[x].get(y)) {
+            return !(alive < 3); // deathLimit
+        }
+
+        return (alive > 4); // birthLimit
     }
+
 
     /**
      * Counts all the neighbours that are alive for the specified cell (coordinate) in the BitSet array.
