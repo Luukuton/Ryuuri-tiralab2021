@@ -10,7 +10,7 @@ plugins {
 mainClassName = "ryuuri.Main"
 
 group 'fi.luukuton'
-version '0.4-SNAPSHOT'
+version '0.5-SNAPSHOT'
 
 tasks.withType(JavaExec) {
     jvmArgs = ['-Xss256M']

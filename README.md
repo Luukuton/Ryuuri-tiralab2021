@@ -20,6 +20,8 @@ The name, Ryuuri (流離), is Japanese and means _"to wander in a foreign countr
 
 ## Weekly reports
 
+[Week 6](documentation/weekly_reports/week6.md)
+
 [Week 5](documentation/weekly_reports/week5.md)
 
 [Week 4](documentation/weekly_reports/week4.md)
