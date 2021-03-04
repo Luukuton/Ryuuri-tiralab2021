@@ -57,6 +57,41 @@ class CelluralMapHandlerTest {
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
     @Tag("UnitTest")
+    public void correctStringOutputOnThreeSimulationSteps(boolean bitImplementation) {
+        CelluralMapAbstract<?> cell = bitImplementation
+                ? new CelluralMapHandlerBit(width, height, aliveChance, 3, false, seed)
+                : new CelluralMapHandler(width, height, aliveChance, 3, false, seed);
+        cell.generateDungeon();
+
+        String output = cell.mapToString();
+        String expected =
+                "######...###########\n" +
+                        "####......##########\n" +
+                        "##....###..##..#####\n" +
+                        "###....##..##..#####\n" +
+                        "###........###..####\n" +
+                        "###.........###....#\n" +
+                        "#####.......###.....\n" +
+                        "#####.......####....\n" +
+                        "#####..#...######...\n" +
+                        "#####..##..#######..\n" +
+                        "######.....##.####.#\n" +
+                        "######.....##..#...#\n" +
+                        "#######....##......#\n" +
+                        "#######...........##\n" +
+                        "##..###........#####\n" +
+                        "###.###.......######\n" +
+                        "###...........##...#\n" +
+                        "###........#........\n" +
+                        "####..##..###....###\n" +
+                        "####################\n";
+
+        assertEquals(expected, output);
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    @Tag("UnitTest")
     void correctStringOutputOnThreeSimulationStepsForLogicV2(boolean bitImplementation) {
         CelluralMapAbstract<?> cell = bitImplementation
                 ? new CelluralMapHandlerBit(width, height, aliveChance, 3, false, seed)
@@ -141,41 +176,6 @@ class CelluralMapHandlerTest {
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
     @Tag("UnitTest")
-    public void correctStringOutputOnThreeSimulationSteps(boolean bitImplementation) {
-        CelluralMapAbstract<?> cell = bitImplementation
-                ? new CelluralMapHandlerBit(width, height, aliveChance, 3, false, seed)
-                : new CelluralMapHandler(width, height, aliveChance, 3, false, seed);
-        cell.generateDungeon();
-
-        String output = cell.mapToString();
-        String expected =
-                "######...###########\n" +
-                "####......##########\n" +
-                "##....###..##..#####\n" +
-                "###....##..##..#####\n" +
-                "###........###..####\n" +
-                "###.........###....#\n" +
-                "#####.......###.....\n" +
-                "#####.......####....\n" +
-                "#####..#...######...\n" +
-                "#####..##..#######..\n" +
-                "######.....##.####.#\n" +
-                "######.....##..#...#\n" +
-                "#######....##......#\n" +
-                "#######...........##\n" +
-                "##..###........#####\n" +
-                "###.###.......######\n" +
-                "###...........##...#\n" +
-                "###........#........\n" +
-                "####..##..###....###\n" +
-                "####################\n";
-
-        assertEquals(expected, output);
-    }
-
-    @ParameterizedTest
-    @ValueSource(booleans = {false, true})
-    @Tag("UnitTest")
     public void correctStringOutputOn10000SimulationSteps(boolean bitImplementation) {
         CelluralMapAbstract<?> cell = bitImplementation
                 ? new CelluralMapHandlerBit(width, height, aliveChance, 10000, false, seed)
@@ -216,8 +216,6 @@ class CelluralMapHandlerTest {
                 ? new CelluralMapHandlerBit(width, height, aliveChance, 3, false, -406169416787061417L)
                 : new CelluralMapHandler(width, height, aliveChance, 3, false, -406169416787061417L);
         cell.generateDungeon();
-
-        System.out.println(cell.mapToString());
 
         assertTrue(cell.isDungeonConnected());
     }
