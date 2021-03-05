@@ -34,7 +34,7 @@ public class GUI extends Application {
     private Slider widthSlider, heightSlider, chanceSlider, stepsSlider, xScaleSlider, yScaleSlider;
     private Button generateBtn, saveImgFile, saveDataBtn;
     private CheckBox seedLocked, connected;
-    private ChoiceBox<String> algorithmInitVersion, algorithmLogicVersion;
+    private ChoiceBox<String> algorithmWalls, logicVer;
     private ImageView imageView;
     private ImageUtil imageUtil;
     private LongField seedField;
@@ -129,17 +129,27 @@ public class GUI extends Application {
 
         long finalSeed = seed; // Variable used in lambda expression should be final or effectively final
         new Thread(() -> {
-            boolean outerWalls = algorithmInitVersion.getSelectionModel().getSelectedItem().equals("Walls");
-            int logicVersion = algorithmLogicVersion.getSelectionModel().getSelectedItem().equals("Logic Ver. 2") ? 2 : 1;
-
-            CelluralMapHandler cells = new CelluralMapHandler(width, height, chance, steps, connected.isSelected(), finalSeed);
+            boolean outerWalls = algorithmWalls.getSelectionModel().getSelectedItem().equals("Walls");
+            int logicVersion = logicVer.getSelectionModel().getSelectedItem().equals("Logic Ver. 2") ? 2 : 1;
+            CelluralMapHandler cells = new CelluralMapHandler(
+                    width,
+                    height,
+                    chance,
+                    steps,
+                    connected.isSelected(),
+                    finalSeed
+            );
             cells.setAlgorithmVersions(outerWalls, logicVersion);
 
             try {
                 cells.generateDungeon();
             } catch (StackOverflowError err) {
                 Platform.runLater(() -> {
-                    Label stackOverflow = new Label("Stack overflow error! Try generating without the dungeon having to be connected or with lower values. \nChanging the logic version might help too.");
+                    Label stackOverflow = new Label(
+                            "Stack overflow error! " +
+                            "Try generating without the dungeon having to be connected or with lower values. " +
+                            "\nChanging the logic version might help too."
+                    );
                     mainView.setCenter(stackOverflow);
                     controls.getChildren().remove(overlay);
                     controls.setDisable(false);
@@ -168,7 +178,9 @@ public class GUI extends Application {
                 rawData = cells.mapToString();
             } catch (OutOfMemoryError err) {
                 Platform.runLater(() -> {
-                    Label outOfMemory = new Label("Out of memory on trying to scale the dungeon. Try to lower the scale factors.");
+                    Label outOfMemory = new Label(
+                            "Out of memory on trying to scale the dungeon. Try to lower the scale factors."
+                    );
                     mainView.setCenter(outOfMemory);
                     controls.getChildren().remove(overlay);
                     controls.setDisable(false);
@@ -240,7 +252,8 @@ public class GUI extends Application {
 
         HBox sliderFrame = new HBox(10);
         sliderFrame.getChildren().addAll(label, longField, slider);
-        sliderFrame.setStyle("-fx-background-color: white; -fx-padding:10; -fx-font-size: 12; -fx-alignment: baseline-left;");
+        sliderFrame.setStyle("-fx-background-color: white; -fx-padding:10;" +
+                " -fx-font-size: 12; -fx-alignment: baseline-left;");
 
         return sliderFrame;
     }
@@ -307,10 +320,13 @@ public class GUI extends Application {
                 16
         );
 
-        String controlStyling = "-fx-spacing: 5px; -fx-background-color: white; -fx-padding: 10; -fx-font-size: 12; -fx-alignment: baseline-left;";
+        String controlStyling = "-fx-spacing: 5px; -fx-background-color: white; -fx-padding: 10;" +
+                " -fx-font-size: 12; -fx-alignment: baseline-left;";
 
         Label seedLabel = new Label("Seed");
-        seedLabel.setTooltip(new Tooltip("The seed for the dungeon. Inputting 0 or anything else than a number means no seed. Max: 2^63-1 & min: -2^63."));
+        seedLabel.setTooltip(new Tooltip(
+                "Random by inputting 0 or anything else than an integer. Max: 2^63-1, min: -2^63."
+        ));
         seedLabel.setPrefWidth(60);
 
         // If not checked, the seed will change on clicking Generate.
@@ -319,23 +335,23 @@ public class GUI extends Application {
         HBox seedFrame = new HBox(seedLabel, seedField, seedLocked);
         seedFrame.setStyle(controlStyling);
 
-        algorithmInitVersion = new ChoiceBox<>();
-        algorithmInitVersion.setItems(FXCollections.observableArrayList("No Walls", "Walls"));
-        algorithmInitVersion.getSelectionModel().select(0);
-        algorithmInitVersion.setPrefWidth(100);
-        algorithmInitVersion.setPrefHeight(25);
+        algorithmWalls = new ChoiceBox<>();
+        algorithmWalls.setItems(FXCollections.observableArrayList("No Walls", "Walls"));
+        algorithmWalls.getSelectionModel().select(0);
+        algorithmWalls.setPrefWidth(100);
+        algorithmWalls.setPrefHeight(25);
 
-        algorithmLogicVersion = new ChoiceBox<>();
-        algorithmLogicVersion.setItems(FXCollections.observableArrayList("Logic Ver. 1", "Logic Ver. 2"));
-        algorithmLogicVersion.getSelectionModel().select(0);
-        algorithmLogicVersion.setPrefWidth(100);
-        algorithmLogicVersion.setPrefHeight(25);
+        logicVer = new ChoiceBox<>();
+        logicVer.setItems(FXCollections.observableArrayList("Logic Ver. 1", "Logic Ver. 2"));
+        logicVer.getSelectionModel().select(0);
+        logicVer.setPrefWidth(100);
+        logicVer.setPrefHeight(25);
 
         Label versionLabel = new Label("Versions");
-        versionLabel.setTooltip(new Tooltip("Two different algorithm version for dungeon initialization and generation logic."));
+        versionLabel.setTooltip(new Tooltip("Dungeon outer walls and algorithm logic version."));
         versionLabel.setPrefWidth(60);
 
-        HBox versionFrame = new HBox(versionLabel, algorithmInitVersion, algorithmLogicVersion);
+        HBox versionFrame = new HBox(versionLabel, algorithmWalls, logicVer);
         versionFrame.setStyle(controlStyling);
 
         connected = new CheckBox("Should the dungeon be connected?");
@@ -344,7 +360,6 @@ public class GUI extends Application {
         generateBtn = new Button("Generate");
         saveImgFile = new Button("Save image as");
         saveDataBtn = new Button("Copy data to clipboard");
-        // importBtn = new Button("Import raw data");
 
         HBox buttons = new HBox(generateBtn, saveImgFile, saveDataBtn);
         buttons.setStyle("-fx-spacing: 5px; -fx-alignment: baseline-left;");
@@ -390,7 +405,10 @@ public class GUI extends Application {
             double scale = clamp(
                     Math.pow(1.01, e.getDeltaY()),
                     Math.min(0 / viewport.getWidth(), 0 / viewport.getHeight()),
-                    Math.max(imageView.getImage().getWidth() / viewport.getWidth(), imageView.getImage().getHeight() / viewport.getHeight())
+                    Math.max(
+                            imageView.getImage().getWidth() / viewport.getWidth(),
+                            imageView.getImage().getHeight() / viewport.getHeight()
+                    )
             );
 
             Point2D mouse = calcScaleCoordinate(new Point2D(e.getX(), e.getY()));
@@ -422,7 +440,9 @@ public class GUI extends Application {
      * Resets the size (viewport) of the image to its original values.
      */
     private void resetImageViewSize() {
-        imageView.setViewport(new Rectangle2D(0, 0, imageView.getImage().getWidth(), imageView.getImage().getHeight()));
+        imageView.setViewport(
+                new Rectangle2D(0, 0, imageView.getImage().getWidth(), imageView.getImage().getHeight())
+        );
     }
 
     /**
@@ -446,7 +466,6 @@ public class GUI extends Application {
      * @param value The value (double) for comparison
      * @param min Min value to return (double)
      * @param max Max value to return (double)
-     *
      * @return double
      */
     private double clamp(double value, double min, double max) {
@@ -461,7 +480,6 @@ public class GUI extends Application {
      * Gets a new Point2D value calculated from the current position of the cursor.
      *
      * @param imageViewCoordinates Cursor coordinates
-     *
      * @return Point2D
      */
     private Point2D calcScaleCoordinate(Point2D imageViewCoordinates) {
@@ -469,7 +487,10 @@ public class GUI extends Application {
         double yProportion = imageViewCoordinates.getY() / imageView.getBoundsInLocal().getHeight();
 
         Rectangle2D viewport = imageView.getViewport();
-        return new Point2D(viewport.getMinX() + xProportion * viewport.getWidth(), viewport.getMinY() + yProportion * viewport.getHeight());
+        return new Point2D(
+                viewport.getMinX() + xProportion * viewport.getWidth(),
+                viewport.getMinY() + yProportion * viewport.getHeight()
+        );
     }
 
 

@@ -7,7 +7,7 @@ public class CelluralMapHandlerBit extends CelluralMapAbstract<BitSet[]> {
     public BitSet[] map;
 
     /**
-     * Constructor
+     * Constructor. Defaults: logic version 1 and no outer walls.
      *
      * @param width width in pixels as integer
      * @param height height in pixels as integer
@@ -36,7 +36,7 @@ public class CelluralMapHandlerBit extends CelluralMapAbstract<BitSet[]> {
     }
 
     /**
-     * Overloads the constructor without seed
+     * Overloads the constructor without seed (random seed).
      *
      * @param width width in pixels as integer
      * @param height height in pixels as integer
@@ -50,7 +50,7 @@ public class CelluralMapHandlerBit extends CelluralMapAbstract<BitSet[]> {
 
     /**
      * Initializes the dungeon BitSet array
-     * **/
+     */
     public void generateDungeon() {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -199,7 +199,6 @@ public class CelluralMapHandlerBit extends CelluralMapAbstract<BitSet[]> {
      *
      * @param wall if walls should be counted
      * @param openCell if open cells (dungeon areas) should be counted
-     *
      * @return cell count
      */
     public int countCells(boolean wall, boolean openCell) {

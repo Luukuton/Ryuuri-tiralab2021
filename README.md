@@ -21,6 +21,8 @@ The name, Ryuuri (流離), is Japanese and means _"to wander in a foreign countr
 
 ## Weekly reports
 
+[Week 7](documentation/weekly_reports/week6.md)
+
 [Week 6](documentation/weekly_reports/week6.md)
 
 [Week 5](documentation/weekly_reports/week5.md)
@@ -94,6 +96,10 @@ They can be viewed by opening _build/docs/javadoc/index.html_ in a browser.
 Checks defined in [checkstyle.xml](config/checkstyle/checkstyle.xml) can be executed with:
 ```
 gradlew checkstyleMain
+```
+and for tests
+```
+gradlew checkstyleTest
 ```
 
 Results can be viewed by opening _target/site/checkstyle.html_ in a browser.

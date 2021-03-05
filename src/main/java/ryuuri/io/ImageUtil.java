@@ -1,9 +1,8 @@
 package ryuuri.io;
 
-import  javafx.scene.image.WritableImage;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.embed.swing.SwingFXUtils;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -36,12 +35,12 @@ public class ImageUtil {
     public WritableImage generateImage() {
         image = new WritableImage(width, height);
 
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                Color color = (data[i][j] == 0)
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Color color = (data[x][y] == 0)
                         ? new Color(0.9, 0.9, 0.9, 1)
                         : new Color(0, 0, 0.5, 1);
-                image.getPixelWriter().setColor(i, j, color);
+                image.getPixelWriter().setColor(x, y, color);
             }
         }
         return image;
@@ -50,24 +49,24 @@ public class ImageUtil {
     /**
      * Scales the image without any quality loss.
      *
-     * @param xFactor How many times to scale in width as integer
-     * @param yFactor How many times to scale in height as integer
+     * @param widthFactor How many times to scale in width as integer
+     * @param heightFactor How many times to scale in height as integer
      */
-    public void scaleData(int xFactor, int yFactor) {
-        if (xFactor <= 1 && yFactor <= 1) {
+    public void scaleData(int widthFactor, int heightFactor) {
+        if (widthFactor <= 1 && heightFactor <= 1) {
             return;
         }
 
-        width *= xFactor;
-        height *= yFactor;
+        width *= widthFactor;
+        height *= heightFactor;
 
-        int rows = data.length * xFactor;
-        int cols = data[0].length * yFactor;
+        int rows = data.length * widthFactor;
+        int cols = data[0].length * heightFactor;
         int[][] scaledData = new int[rows][cols];
 
         for (int x = 0; x < rows; x++) {
             for (int y = 0; y < cols; y++) {
-                scaledData[x][y] = data[x / xFactor][y / yFactor];
+                scaledData[x][y] = data[x / widthFactor][y / heightFactor];
             }
         }
 

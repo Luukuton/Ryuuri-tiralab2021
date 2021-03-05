@@ -10,7 +10,7 @@ public class CelluralMapHandler extends CelluralMapAbstract<int[][]> {
     public int[][] map;
 
     /**
-     * Constructor
+     * Constructor. Defaults: logic version 1 and no outer walls.
      *
      * @param width width in pixels as integer
      * @param height height in pixels as integer
@@ -20,14 +20,13 @@ public class CelluralMapHandler extends CelluralMapAbstract<int[][]> {
      * @param seed seed for the random number generator as long
      */
     public CelluralMapHandler(int width, int height, int aliveChance, int steps, boolean connected, long seed) {
-        this.outerWalls = false;
-        this.logicVersion = 1;
-
         this.width = width;
         this.height = height;
         this.aliveChance = aliveChance;
         this.steps = steps;
         this.connected = connected;
+        this.outerWalls = false;
+        this.logicVersion = 1;
 
         this.seed = (seed == 0) ? new Random().nextLong() : seed;
         this.rand = new Random(this.seed);
@@ -36,7 +35,7 @@ public class CelluralMapHandler extends CelluralMapAbstract<int[][]> {
     }
 
     /**
-     * Overloads the constructor without seed
+     * Overloads the constructor without seed (random seed).
      *
      * @param width width in pixels as integer
      * @param height height in pixels as integer
@@ -50,7 +49,7 @@ public class CelluralMapHandler extends CelluralMapAbstract<int[][]> {
 
     /**
      * Initializes the dungeon matrix
-     * **/
+     */
     public void generateDungeon() {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -71,7 +70,7 @@ public class CelluralMapHandler extends CelluralMapAbstract<int[][]> {
     }
 
     /**
-     * Makes one simulation step
+     * Makes one simulation step.
      *
      * @param steps the amount of simulation steps to make as integer
      */
@@ -88,7 +87,7 @@ public class CelluralMapHandler extends CelluralMapAbstract<int[][]> {
     }
 
     /**
-     * Determines if the cell will be a wall. Two versions embedded.
+     * Determines if the cell will be a wall. Two logic versions embedded.
      *
      * @param x x coordinate as integer
      * @param y y coordinate as integer
@@ -186,11 +185,10 @@ public class CelluralMapHandler extends CelluralMapAbstract<int[][]> {
     }
 
     /**
-     * Counts cells
+     * Counts cells.
      *
      * @param wall if walls should be counted
      * @param openCell if open cells (dungeon areas) should be counted
-     *
      * @return cell count
      */
     public int countCells(boolean wall, boolean openCell) {
@@ -209,7 +207,7 @@ public class CelluralMapHandler extends CelluralMapAbstract<int[][]> {
     }
 
     /**
-     * Returns a string version of the dungeon
+     * Returns a string version of the dungeon.
      *
      * @return a string map of the matrix
      */
