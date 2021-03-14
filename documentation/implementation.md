@@ -22,8 +22,6 @@ Time (1000x1000 & 1000 steps): 22190ms
 Time (100x100 & 1 000 000 steps): 320207ms\
 Time (1000x1000 & 1000 steps): 32840ms
 
-The code made for the BitSet implementation is currently in [archive directory](archive).
-
 ## Inputs
 
 Maximum values are the same as denoted in the GUI. Actual maximum corresponds to the maximum of Java's integer and long values. They are used during benchmarking
@@ -34,12 +32,11 @@ Maximum values are the same as denoted in the GUI. Actual maximum corresponds to
 - **Simulation steps** or **cycles** (integer, 0 - 10000) for the generation
 - **Seed** for the Random Number Generator (long, can be locked)
     - When set to 0 or unlocked, the seed will be random
-    - Currently using Java's implementation of Random
+    - Java's implementation of Random
 - Traversable dungeon (true or false)
     - Flood fill
 - Algorithm logic version (currently 1 or 2)
 - If there should be outer walls (true or false)
-
 
 ### Initialization
 
@@ -52,17 +49,16 @@ On every cell, the algorithm will determine if it's 1 (aliveChance %) or 0 (100 
 
 ### Algorithm Logic Ver. 1
 
-- **Birth** and **death limits** for cells (pixels)
-    - Currently hard coded as 4 and 3
+- **Birth** and **death limits**  of 4 and 3 for cells (pixels)
 
 ### Algorithm Logic Ver. 2
 
 - Fits better when trying to find traversable dungeons
-- **Birth**, **secondary birth** and **death limits** for cells (pixels)  **[2]**
-    - Currently hard coded as 4, 5 and 2
+- **Birth**, **secondary birth** and **death limits** of 4, 5 and 2 for cells (pixels)  **[2]**
 
 ## Sources
-The algorithm, "living" cells, Ryuuri uses is based on [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
+The algorithm, "living" cells, Ryuuri uses is based on [Cellural Automation](https://en.wikipedia.org/wiki/Cellular_automaton).
+A well-known example of that is [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
 ##### [1]
 
